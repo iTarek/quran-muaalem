@@ -289,7 +289,7 @@ class MergeMatch:
         self.start_b_idx = match.start_b_idx
 
 
-def merge_lists_with_overlap(A, B, num_ignore=2):
+def merge_lists_with_overlap(A, B, num_ignore=2, max_B_offset=2):
     """
     Merge two lists by finding the maximum overlap between the end of A and beginning of B.
 
@@ -299,20 +299,38 @@ def merge_lists_with_overlap(A, B, num_ignore=2):
     Args:
         A: First list
         B: Second list
+        max_B_offset: the starting point of comarison is shifted to the left by `max_B_offset`
+        EX: A = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], B = [5, 6, 7, 8]
+
+        if max_B_offset = 0 then start point:
+        A: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        B:                   [5, 6, 7, 8]
+
+        if max_B_offset = 1 then start point:
+        A: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        B:                [5, 6, 7, 8]
+
+        if max_B_offset = 2 then start point:
+        A: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        B:             [5, 6, 7, 8]
+
+        Then shifting B to the right step by step unitl we find a match
+
 
     Returns:
         Merged list with overlap handled optimally
     """
 
-    a_orig_offset = max(len(A) - len(B), 0)
+    a_orig_offset = max(len(A) - len(B) - max_B_offset, 0)
     b_span = min(len(A), len(B))
-    # print(f"A({len(A)}):\n{A}\nB({len(B)}):\n{B}")
+    print(f"A({len(A)}):\n{A}\nB({len(B)}):\n{B}")
     curr_match = MergeMatch()
     best_match = MergeMatch()
     for a_offset in range(a_orig_offset, len(A)):
         for ptr in range(b_span):
             a_idx = a_offset + ptr
             b_idx = ptr
+
             if A[a_idx] == B[b_idx]:
                 if curr_match.longest_match is None:
                     curr_match.longest_match = 1
@@ -337,7 +355,8 @@ def merge_lists_with_overlap(A, B, num_ignore=2):
 
         # Reset step
         curr_match.longest_match = None
-        b_span -= 1
+        if (a_offset + len(B)) >= len(A):
+            b_span -= 1
 
     if best_match.longest_match is None:
         return A + B
@@ -389,8 +408,6 @@ def sliding_window_inference(
         # print(curr_ph_ids)
         # merging ids
         if merged_ph_ids:
-            print(merged_ph_ids)
-            print(curr_ph_ids)
             merged_ph_ids = merge_lists_with_overlap(merged_ph_ids, curr_ph_ids)
         else:
             merged_ph_ids = curr_ph_ids
