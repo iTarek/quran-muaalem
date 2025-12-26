@@ -386,7 +386,7 @@ def sliding_window_inference(
     overlap_samples = window_samples - chunk_samples
 
     merged_ph_ids: list = []
-    for start in range(0, len(wave), chunk_samples):
+    for start in range(0, len(wave) - window_samples, chunk_samples):
         end = start + window_samples
         print(
             f"Start MS: {start / sampling_rate * 1000}, End MS: {end / sampling_rate * 1000}"
