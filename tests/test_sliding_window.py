@@ -144,7 +144,6 @@ def merge_lists_with_overlap(A, B, num_ignore=2, max_B_offset=2):
         print(
             f"Start of A: {best_match.start_a_idx}, Start of B IDX: {best_match.start_b_idx}, Longest Match: {best_match.longest_match}"
         )
-        print("\n\n")
         return A[: best_match.start_a_idx] + B[best_match.start_b_idx :]
 
 
@@ -180,6 +179,7 @@ def sliding_window_inference(
         )
         curr_ph_ids = level_to_ids["phonemes"]
         curr_ph_probs = level_to_probs["phonemes"]
+        print(curr_ph_ids.tolist())
         curr_ph_ids = ctc_decode(curr_ph_ids, curr_ph_probs)[0].ids.tolist()
         if curr_ph_ids:
             if curr_ph_ids[-1] == 0:
@@ -191,6 +191,8 @@ def sliding_window_inference(
         else:
             merged_ph_ids = curr_ph_ids
         # print(merged_ph_ids)
+        print("-" * 40)
+        print("\n\n\n")
 
     return merged_ph_ids
 
@@ -205,14 +207,16 @@ def decode_phonemes(ids: list, vocab):
 
 if __name__ == "__main__":
     window_ms = 6000
-    chunk_ms = 300
+    chunk_ms = 500
+    padding_ms = 0
     window_ms = int(fix_chunk_length(window_ms))
     chunk_ms = int(fix_chunk_length(chunk_ms))
+    padding_ms = int(fix_chunk_length(padding_ms))
     sampling_rate = 16000
     # audio_path = "./assets/test.wav"
     audio_path = "./assets/fatiha_long_track.wav"
     device = "cuda"
-    model_id = "obadx/muaalem-model-v3_2"
+    model_id = "obadx/muaalem-model-v3_0"
     dtype = torch.bfloat16
 
     print(f"Window(ms): `{window_ms}`. Chunk(ms): `{chunk_ms}`")
@@ -260,11 +264,17 @@ if __name__ == "__main__":
         window_ms=window_ms,
         chunk_ms=chunk_ms,
         sampling_rate=sampling_rate,
+        zero_padd_len_ms=padding_ms,
     )
     print(golden_phonemes_ids)
     print(sw_ph_ids)
     print(f"len sw: {len(sw_ph_ids)}, len of golden: {len(golden_phonemes_ids)}")
     print(golden_phonemes_ids == sw_ph_ids)
+
+    golden_ph_str = decode_phonemes(golden_phonemes_ids, mulit_level_tokenizer.vocab)
+    sw_ph_str = decode_phonemes(sw_ph_ids, mulit_level_tokenizer.vocab)
+
     print_colored_diff_summary(golden_phonemes_ids, sw_ph_ids, "Phonmes ")
 
-    decode_phonemes([1], mulit_level_tokenizer.vocab)
+    print(golden_ph_str)
+    print(sw_ph_str)
