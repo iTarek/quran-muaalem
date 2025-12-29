@@ -24,7 +24,10 @@ export default defineConfig({
           { text: 'المعلّم القرآني', link: '/muaalem/' },
           { text: 'Quran Transcript', link: '/quran-transcript/' },
           { text: 'النموذج', link: '/model/' },
+          { text: 'المسار الصوتي', link: '/pipeline/' },
+          { text: 'التدريب', link: '/training/' },
           { text: 'المطور', link: '/dev/' },
+          { text: 'الملحق', link: '/appendix/' },
         ],
         sidebar: [
           {
@@ -97,7 +100,10 @@ export default defineConfig({
           { text: 'Quran Muaalem', link: '/en/muaalem/' },
           { text: 'Quran Transcript', link: '/en/quran-transcript/' },
           { text: 'Model', link: '/en/model/' },
+          { text: 'Pipeline', link: '/en/pipeline/' },
+          { text: 'Training', link: '/en/training/' },
           { text: 'Developer', link: '/en/dev/' },
+          { text: 'Appendix', link: '/en/appendix/' },
         ],
         sidebar: [
           {
