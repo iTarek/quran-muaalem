@@ -2,7 +2,7 @@
 layout: home
 hero:
   name: Quran Muaalem
-  text: Quran recitation analysis with phonetic and tajweed signals
+  text: Correct Holy Quran recitations detecting: letters, diarctization, attribute of articulations and Tajweed rules using AI opensource for Muslims
   tagline: Model + tools + transcript pipeline in one repo
   actions:
     - theme: brand
