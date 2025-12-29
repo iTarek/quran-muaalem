@@ -17,83 +17,81 @@ export default defineConfig({
     },
   },
   themeConfig: {
-    locales: {
-      root: {
-        nav: [
-          { text: 'البدء', link: '/getting-started' },
-          { text: 'المعلّم القرآني', link: '/muaalem/' },
-          { text: 'Quran Transcript', link: '/quran-transcript/' },
-          { text: 'النموذج', link: '/model/' },
-          { text: 'المسار الصوتي', link: '/pipeline/' },
-          { text: 'التدريب', link: '/training/' },
-          { text: 'المطور', link: '/dev/' },
-          { text: 'الملحق', link: '/appendix/' },
-        ],
-        sidebar: [
-          {
-            text: 'البدء',
-            link: '/getting-started',
-          },
-          {
-            text: 'المعلّم القرآني',
-            items: [
-              { text: 'نظرة عامة', link: '/muaalem/' },
-              { text: 'واجهة Gradio', link: '/muaalem/gradio-ui' },
-              { text: 'واجهة بايثون', link: '/muaalem/python-api' },
-              { text: 'المخرجات', link: '/muaalem/output' },
-            ],
-          },
-          {
-            text: 'النموذج والمعمارية',
-            items: [
-              { text: 'نظرة عامة', link: '/model/' },
-              { text: 'المعمارية', link: '/model/architecture' },
-              { text: 'الأوزان والصيغة', link: '/model/weights' },
-            ],
-          },
-          {
-            text: 'مسار الرسم الصوتي',
-            items: [
-              { text: 'نظرة عامة', link: '/pipeline/' },
-              { text: 'خصائص المصحف', link: '/pipeline/moshaf-attributes' },
-            ],
-          },
-          {
-            text: 'Quran Transcript',
-            items: [
-              { text: 'نظرة عامة', link: '/quran-transcript/' },
-              { text: 'التثبيت', link: '/quran-transcript/installation' },
-              { text: 'الاستخدام', link: '/quran-transcript/usage' },
-              { text: 'الرسم الصوتي', link: '/quran-transcript/phonetics' },
-              { text: 'الأدوات', link: '/quran-transcript/tools' },
-            ],
-          },
-          {
-            text: 'البيانات والتدريب',
-            items: [
-              { text: 'نظرة عامة', link: '/training/' },
-              { text: 'مصادر البيانات', link: '/training/data-sources' },
-              { text: 'خطوات المسار', link: '/training/pipeline' },
-            ],
-          },
-          {
-            text: 'للمطورين',
-            items: [
-              { text: 'نظرة عامة', link: '/dev/' },
-              { text: 'الاختبارات', link: '/dev/tests' },
-              { text: 'المساهمة', link: '/dev/contributing' },
-            ],
-          },
-          {
-            text: 'الملحق',
-            items: [
-              { text: 'الورقة العلمية', link: '/appendix/paper' },
-              { text: 'الترخيص', link: '/appendix/license' },
-              { text: 'الأسئلة الشائعة', link: '/appendix/faq' },
-            ],
-          },
+    nav: [
+      { text: 'البدء', link: '/getting-started' },
+      { text: 'المعلّم القرآني', link: '/muaalem/' },
+      { text: 'Quran Transcript', link: '/quran-transcript/' },
+      { text: 'النموذج', link: '/model/' },
+      { text: 'المسار الصوتي', link: '/pipeline/' },
+      { text: 'التدريب', link: '/training/' },
+      { text: 'المطور', link: '/dev/' },
+      { text: 'الملحق', link: '/appendix/' },
+    ],
+    sidebar: [
+      {
+        text: 'البدء',
+        link: '/getting-started',
+      },
+      {
+        text: 'المعلّم القرآني',
+        items: [
+          { text: 'نظرة عامة', link: '/muaalem/' },
+          { text: 'واجهة Gradio', link: '/muaalem/gradio-ui' },
+          { text: 'واجهة بايثون', link: '/muaalem/python-api' },
+          { text: 'المخرجات', link: '/muaalem/output' },
         ],
       },
+      {
+        text: 'النموذج والمعمارية',
+        items: [
+          { text: 'نظرة عامة', link: '/model/' },
+          { text: 'المعمارية', link: '/model/architecture' },
+          { text: 'الأوزان والصيغة', link: '/model/weights' },
+        ],
+      },
+      {
+        text: 'مسار الرسم الصوتي',
+        items: [
+          { text: 'نظرة عامة', link: '/pipeline/' },
+          { text: 'خصائص المصحف', link: '/pipeline/moshaf-attributes' },
+        ],
+      },
+      {
+        text: 'Quran Transcript',
+        items: [
+          { text: 'نظرة عامة', link: '/quran-transcript/' },
+          { text: 'التثبيت', link: '/quran-transcript/installation' },
+          { text: 'الاستخدام', link: '/quran-transcript/usage' },
+          { text: 'الرسم الصوتي', link: '/quran-transcript/phonetics' },
+          { text: 'الأدوات', link: '/quran-transcript/tools' },
+        ],
+      },
+      {
+        text: 'البيانات والتدريب',
+        items: [
+          { text: 'نظرة عامة', link: '/training/' },
+          { text: 'مصادر البيانات', link: '/training/data-sources' },
+          { text: 'خطوات المسار', link: '/training/pipeline' },
+        ],
+      },
+      {
+        text: 'للمطورين',
+        items: [
+          { text: 'نظرة عامة', link: '/dev/' },
+          { text: 'الاختبارات', link: '/dev/tests' },
+          { text: 'المساهمة', link: '/dev/contributing' },
+        ],
+      },
+      {
+        text: 'الملحق',
+        items: [
+          { text: 'الورقة العلمية', link: '/appendix/paper' },
+          { text: 'الترخيص', link: '/appendix/license' },
+          { text: 'الأسئلة الشائعة', link: '/appendix/faq' },
+        ],
+      },
+    ],
+    locales: {
       en: {
         nav: [
           { text: 'Getting Started', link: '/en/getting-started' },
