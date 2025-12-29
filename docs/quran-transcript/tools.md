@@ -1,17 +1,17 @@
-# Tools
+# الأدوات
 
-The `quran-transcript` subproject includes a few helper apps for annotation and inspection.
+مشروع `quran-transcript` يتضمن تطبيقات مساعدة للتوسيم والفحص.
 
-## FastAPI Server
+## خادم FastAPI
 
-`quran-transcript/server.py` exposes endpoints such as:
+الملف `quran-transcript/server.py` يعرّف نقاط نهاية مثل:
 
-- `/get/` and `/step_ayat/` for Aya navigation
+- `/get/` و `/step_ayat/` للتنقل بين الآيات
 - `/get_suar_names/`
-- `/save_rasm_map/` and `/save_quran_dict/` for rasm map edits
+- `/save_rasm_map/` و `/save_quran_dict/` لحفظ خرائط الرسم
 
-These endpoints are used by the Streamlit UI in `quran-transcript/streamlit_app.py`.
+هذه النقاط تُستخدم داخل واجهة Streamlit في `quran-transcript/streamlit_app.py`.
 
-## Streamlit Annotation UI
+## واجهة Streamlit للتوسيم
 
-`quran-transcript/streamlit_app.py` launches a UI that calls helpers in `quran-transcript/app/utils.py`. The UI is built around editing rasm maps between Uthmani and Imlaey scripts and saving updates through the API layer in `quran-transcript/app/api_utils.py`.
+`quran-transcript/streamlit_app.py` يشغل واجهة تستدعي أدوات من `quran-transcript/app/utils.py`. هذه الواجهة مبنية لتعديل خرائط الرسم بين العثماني والإملائي وحفظها عبر طبقة API في `quran-transcript/app/api_utils.py`.

@@ -1,45 +1,45 @@
-# Getting Started
+# البدء
 
-This project is a Python package with an optional Gradio UI. The core package lives in `src/quran_muaalem/` and depends on `quran-transcript` for phonetic reference generation.
+هذا المشروع حزمة بايثون مع واجهة Gradio اختيارية. الحزمة الأساسية موجودة في `src/quran_muaalem/` وتعتمد على `quran-transcript` لإنشاء الرسم الصوتي المرجعي.
 
-## Requirements
+## المتطلبات
 
-From `README.md` and `pyproject.toml`:
+حسب `README.md` و `pyproject.toml`:
 
-- Python 3.10+
-- System audio tools for common workflows:
-  - `ffmpeg` for audio decoding
-  - `libsndfile1` and `portaudio19-dev` if you work with audio I/O (see `README.md` install snippet)
-- Optional GPU (CUDA) for faster inference; the code uses `torch.cuda.is_available()` in `src/quran_muaalem/gradio_app.py`.
+- بايثون 3.10+
+- أدوات نظامية للصوت (حسب الاستخدام):
+  - `ffmpeg` لفك ترميز الصوت
+  - `libsndfile1` و `portaudio19-dev` عند التعامل مع إدخال/إخراج الصوت (مذكورة في `README.md`)
+- بطاقة GPU اختيارية لتسريع الاستدلال؛ الواجهة تستخدم `torch.cuda.is_available()` في `src/quran_muaalem/gradio_app.py`.
 
-## Install
+## التثبيت
 
-Core package:
+الحزمة الأساسية:
 
 ```bash
 pip install quran-muaalem
 ```
 
-UI extras (adds Gradio + audio tooling):
+إضافات الواجهة (تضيف Gradio وأدوات الصوت):
 
 ```bash
 pip install "quran-muaalem[ui]"
 ```
 
-If you use `uv`, the README documents an all-in-one command for the UI:
+إذا كنت تستخدم `uv` فهناك أمر واحد لتشغيل الواجهة كما في README:
 
 ```bash
 uvx --no-cache --from https://github.com/obadx/quran-muaalem.git[ui] quran-muaalem-ui
 ```
 
-## Quick Start (Python API)
+## بداية سريعة (Python API)
 
-The main inference class is `Muaalem` in `src/quran_muaalem/inference.py`. It expects:
+الفئة الأساسية للاستدلال هي `Muaalem` في `src/quran_muaalem/inference.py`. تتوقع:
 
-- audio at **16 kHz** (`sampling_rate=16000` is enforced)
-- a reference phonetic script from `quran_transcript.quran_phonetizer`
+- صوتًا بمعدل **16 kHz** (`sampling_rate=16000` مطلوب)
+- مرجعًا صوتيًا من `quran_transcript.quran_phonetizer`
 
-Minimal flow based on `README.md`:
+مثال مختصر مأخوذ من `README.md`:
 
 ```python
 from librosa.core import load
@@ -59,4 +59,4 @@ wave, _ = load("./assets/test.wav", sr=sampling_rate, mono=True)
 outs = muaalem([wave], [ref], sampling_rate=sampling_rate)
 ```
 
-For a full walkthrough, see the Quran Muaalem API page.
+لشرح أوسع، انتقل إلى صفحة واجهة بايثون.

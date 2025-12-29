@@ -1,9 +1,9 @@
-# Developer Overview
+# للمطورين
 
-Repository layout highlights:
+أهم مسارات المستودع:
 
-- `src/quran_muaalem/` — inference, decoding, UI, and model code.
-- `quran-transcript/` — packaged subproject for script conversion and phonetics.
-- `tests/` — unit tests for Quran Muaalem.
-- `quran-transcript/tests/` — unit tests for Quran Transcript.
-- `assets/` — audio samples and the architecture figure.
+- `src/quran_muaalem/` — الاستدلال وفك الشيفرة والواجهة والنموذج.
+- `quran-transcript/` — مشروع مستقل للتحويل بين الرسوم وبناء الرسم الصوتي.
+- `tests/` — اختبارات المعلّم القرآني.
+- `quran-transcript/tests/` — اختبارات Quran Transcript.
+- `assets/` — عينات صوتية وصورة المعمارية.

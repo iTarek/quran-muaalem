@@ -1,11 +1,11 @@
-# Phonetic Pipeline
+# مسار الرسم الصوتي
 
-Quran Muaalem relies on `quran-transcript` to build a phonetic reference for each verse segment. The UI and API both do this before inference.
+يعتمد المعلّم القرآني على `quran-transcript` لبناء المرجع الصوتي لكل مقطع. الواجهة وواجهة البرمجة تقومان بذلك قبل الاستدلال.
 
-In `src/quran_muaalem/gradio_app.py`:
+في `src/quran_muaalem/gradio_app.py`:
 
-- `Aya(...).get_by_imlaey_words(...)` selects the requested verse segment.
-- `quran_phonetizer(uthmani_ref, current_moshaf, remove_spaces=True)` converts it to a phonetic script.
-- That phonetic script is passed to `Muaalem.__call__` alongside the audio.
+- `Aya(...).get_by_imlaey_words(...)` يحدد المقطع المطلوب.
+- `quran_phonetizer(uthmani_ref, current_moshaf, remove_spaces=True)` يحول النص إلى رسم صوتي.
+- هذا الرسم يمر إلى `Muaalem.__call__` مع الصوت.
 
-This means **the reference script is required** for inference. For details on how `quran_transcript` creates the phonetic script, see the Quran Transcript section.
+بالتالي **المرجع الصوتي مطلوب** للاستدلال. لمزيد من التفاصيل عن بناء الرسم الصوتي راجع قسم Quran Transcript.

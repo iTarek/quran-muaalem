@@ -1,8 +1,8 @@
-# Data Sources
+# مصادر البيانات
 
-From `README.md`:
+حسب `README.md`:
 
-- Recitation dataset preparation: https://github.com/obadx/prepare-quran-dataset
-- Segmenting recitations: https://github.com/obadx/recitations-segmenter
-- Whisper model used for initial transcription: https://huggingface.co/tarteel-ai/whisper-base-ar-quran
-- Text correction and script conversion: https://github.com/obadx/quran-transcript
+- إعداد بيانات التلاوات: https://github.com/obadx/prepare-quran-dataset
+- تقسيم التلاوات: https://github.com/obadx/recitations-segmenter
+- نموذج Whisper المستخدم للنسخ: https://huggingface.co/tarteel-ai/whisper-base-ar-quran
+- التصحيح والتحويل بين الرسوم: https://github.com/obadx/quran-transcript

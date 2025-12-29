@@ -1,9 +1,9 @@
-# Installation
+# التثبيت
 
-The subproject is a standalone Python package.
+المشروع حزمة بايثون مستقلة.
 
 ```bash
 pip install quran-transcript
 ```
 
-The package data includes Quran script files via `tool.setuptools.package-data` in `quran-transcript/pyproject.toml`.
+ملفات بيانات القرآن تُدرج ضمن الحزمة عبر `tool.setuptools.package-data` في `quran-transcript/pyproject.toml`.

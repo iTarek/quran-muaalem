@@ -1,5 +1,5 @@
-# Training and Data Overview
+# نظرة عامة على البيانات والتدريب
 
-This repo documents the data prep pipeline in `README.md` under "خطوات مختصرة للتطوير". The steps reference external repos for collection, segmentation, transcription, correction, and script conversion.
+المستودع يذكر مسار إعداد البيانات في `README.md` تحت "خطوات مختصرة للتطوير". الخطوات تشير إلى مشاريع خارجية لجمع البيانات، التقسيم، النسخ، التصحيح، والتحويل بين الرسوم.
 
-This section summarizes those steps and links to the tools used.
+هذا القسم يلخص تلك الخطوات ويضع روابط الأدوات.

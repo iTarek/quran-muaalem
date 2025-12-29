@@ -1,37 +1,37 @@
 ---
 layout: home
 hero:
-  name: Quran Muaalem
-  text: Quran recitation analysis with phonetic and tajweed signals
-  tagline: Model + tools + transcript pipeline in one repo
+  name: المعلّم القرآني
+  text: تحليل تلاوة القرآن بخصائص صوتية وأحكام تجويد
+  tagline: النموذج + الأدوات + مسار النص القرآني في مستودع واحد
   actions:
     - theme: brand
-      text: Getting Started
+      text: ابدأ
       link: /getting-started
     - theme: alt
       text: Quran Transcript
       link: /quran-transcript/
 features:
-  - title: Multi-level CTC
-    details: The model decodes phonemes and tajweed-related attributes using a multi-level CTC head.
-  - title: Reference-aware analysis
-    details: Inference compares predicted phonemes with a reference phonetic script from quran-transcript.
-  - title: Gradio UI
-    details: A ready-to-run UI is wired in src/quran_muaalem/gradio_app.py.
+  - title: CTC متعدد المستويات
+    details: يفك النموذج الشيفرة على مستوى الفونيمات وخصائص التجويد باستخدام رأس CTC متعدد المستويات.
+  - title: تحليل يعتمد على المرجع
+    details: الاستدلال يقارن الفونيمات المتوقعة مع رسم صوتي مرجعي من quran-transcript.
+  - title: واجهة Gradio
+    details: واجهة جاهزة للتشغيل موجودة في src/quran_muaalem/gradio_app.py.
 ---
 
-## Project Links
+## روابط المشروع
 
 - GitHub: https://github.com/obadx/quran-muaalem
 - PyPI: https://pypi.org/project/quran-muaalem/
-- Hugging Face model: https://huggingface.co/obadx/muaalem-model-v3_2
-- Hugging Face dataset: https://huggingface.co/datasets/obadx/muaalem-annotated-v3
-- Paper: https://arxiv.org/abs/2509.00094
+- نموذج Hugging Face: https://huggingface.co/obadx/muaalem-model-v3_2
+- مجموعة البيانات على Hugging Face: https://huggingface.co/datasets/obadx/muaalem-annotated-v3
+- الورقة العلمية: https://arxiv.org/abs/2509.00094
 
-## What This Repo Contains
+## ماذا يحتوي هذا المستودع؟
 
-- Quran Muaalem inference and UI code under `src/quran_muaalem/`.
-- A full Quran transcript toolkit under `quran-transcript/` (packaged as `quran-transcript`).
-- Deployment and experiment helpers under `deploy/`, `tests/`, and `assets/`.
+- كود الاستدلال وواجهة المستخدم للمعلم القرآني تحت `src/quran_muaalem/`.
+- مشروع Quran Transcript كامل تحت `quran-transcript/` (مُعبأ كحزمة `quran-transcript`).
+- أدوات النشر والاختبارات ضمن `deploy/` و `tests/` و `assets/`.
 
-Use the navigation to dive into each component.
+استخدم التنقل للوصول إلى كل قسم.

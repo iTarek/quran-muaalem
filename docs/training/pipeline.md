@@ -1,13 +1,13 @@
-# Pipeline Steps
+# خطوات المسار
 
-The high-level steps described in `README.md` are:
+الخطوات عالية المستوى المذكورة في `README.md` هي:
 
-1. Collect high-quality recitations.
-2. Segment recitations by pause boundaries.
-3. Transcribe audio using the Quran-specific Whisper model.
-4. Correct transcriptions using the tasmeea algorithm (`quran-transcript`).
-5. Convert Imlaey script to Uthmani script (`quran-transcript`).
-6. Convert Uthmani to phonetic script (`quran-transcript`).
-7. Train with the multi-level CTC architecture (see `src/quran_muaalem/modeling/`).
+1. جمع تلاوات قرآنية عالية الجودة.
+2. تقسيم التلاوات حسب مواضع الوقف.
+3. نسخ الصوت باستخدام نموذج Whisper المخصص للقرآن.
+4. تصحيح النصوص عبر خوارزمية التسميع (`quran-transcript`).
+5. تحويل الرسم الإملائي إلى العثماني (`quran-transcript`).
+6. تحويل الرسم العثماني إلى الرسم الصوتي (`quran-transcript`).
+7. التدريب بمعمارية CTC متعددة المستويات (راجع `src/quran_muaalem/modeling/`).
 
-If you want more details or diagrams here, point me to the training notes you want included.
+إذا توفر لديك توثيق إضافي أو مخططات، أرسلها وسأضيفها هنا.

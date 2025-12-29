@@ -1,30 +1,30 @@
-# Gradio UI
+# واجهة Gradio
 
-The UI entrypoint is defined in `src/quran_muaalem/gradio_app.py` and exposed as the console script `quran-muaalem-ui` in `pyproject.toml`.
+مدخل الواجهة موجود في `src/quran_muaalem/gradio_app.py` ويُعرّف كسكربت طرفي باسم `quran-muaalem-ui` في `pyproject.toml`.
 
-## What the UI Does
+## ماذا تفعل الواجهة؟
 
-Key functions in `src/quran_muaalem/gradio_app.py`:
+أهم الدوال في `src/quran_muaalem/gradio_app.py`:
 
-- `process_audio(...)` loads audio (via `librosa.load`), builds a phonetic reference with `quran_phonetizer`, runs `Muaalem`, and renders HTML output.
-- `update_uthmani_ref(...)` fetches Uthmani script segments from `quran_transcript.Aya`.
-- `create_gradio_input_for_field(...)` builds UI controls based on `MoshafAttributes` fields.
+- `process_audio(...)` تقوم بتحميل الصوت (عبر `librosa.load`)، وبناء مرجع صوتي من `quran_phonetizer`، وتشغيل `Muaalem`، ثم إرجاع HTML.
+- `update_uthmani_ref(...)` تجلب مقطع الرسم العثماني عبر `quran_transcript.Aya`.
+- `create_gradio_input_for_field(...)` تُنشئ عناصر الإدخال بالاعتماد على حقول `MoshafAttributes`.
 
-The app starts in `main()` with:
+تشغيل الواجهة يتم في `main()` بهذا السطر:
 
 ```python
 app.launch(server_name="0.0.0.0", share=True)
 ```
 
-If you want different launch options (disable sharing or set a port), this is the place to adjust them.
+إذا أردت تغيير خيارات التشغيل (إلغاء المشاركة أو تحديد منفذ)، عدّل هذا الاستدعاء.
 
-## Running the UI
+## تشغيل الواجهة
 
-After installing the UI extras:
+بعد تثبيت إضافات الواجهة:
 
 ```bash
 pip install "quran-muaalem[ui]"
 quran-muaalem-ui
 ```
 
-The `quran-muaalem-ui` console script points to `quran_muaalem.gradio_app:main` (see `pyproject.toml`).
+السكربت `quran-muaalem-ui` يشير إلى `quran_muaalem.gradio_app:main` (انظر `pyproject.toml`).

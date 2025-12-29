@@ -1,23 +1,23 @@
-# Tests
+# الاختبارات
 
-There are two test suites:
+هناك مجموعتان من الاختبارات:
 
-- Quran Muaalem: `tests/`
+- المعلّم القرآني: `tests/`
 - Quran Transcript: `quran-transcript/tests/`
 
-Run from repo root:
+التشغيل من جذر المستودع:
 
 ```bash
 pytest
 ```
 
-Optional flag (see `tests/conftest.py`):
+خيار إضافي (انظر `tests/conftest.py`):
 
 ```bash
 pytest --skip-slow
 ```
 
-For the `quran-transcript` subproject, you can also run from its folder:
+ولمشروع `quran-transcript` يمكن التشغيل من مجلده:
 
 ```bash
 cd quran-transcript

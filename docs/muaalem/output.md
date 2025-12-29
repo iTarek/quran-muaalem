@@ -1,24 +1,24 @@
-# Outputs and Explanations
+# المخرجات والشرح
 
-The inference output is a list of `MuaalemOutput` objects (`src/quran_muaalem/muaalem_typing.py`). Each item contains:
+الاستدلال يُرجع قائمة من `MuaalemOutput` (`src/quran_muaalem/muaalem_typing.py`). كل عنصر يحتوي على:
 
-- `phonemes`: a `Unit` with decoded phoneme text, probabilities, and ids.
-- `sifat`: a list of `Sifa` entries (one per phoneme group), each with optional phonetic attributes.
+- `phonemes`: كائن `Unit` مع نص الفونيمات، الاحتمالات، والمعرّفات.
+- `sifat`: قائمة `Sifa` (عنصر لكل مجموعة فونيمات) مع خصائص اختيارية.
 
-## Comparing Predictions to Reference
+## مقارنة التوقع مع المرجع
 
-Two helper modules format the outputs for humans:
+هناك وحدتان لعرض النتائج:
 
-- `src/quran_muaalem/explain.py` renders a terminal table using `rich`.
-  - `explain_for_terminal(...)` builds a diff between predicted phonemes and the reference, then prints a table.
-- `src/quran_muaalem/explain_gradio.py` renders HTML for the Gradio UI.
-  - `explain_for_gradio(...)` shows a colorized phoneme diff and a table of attributes.
+- `src/quran_muaalem/explain.py` يعرض جدولًا في الطرفية باستخدام `rich`.
+  - `explain_for_terminal(...)` يبني فرقًا بين الفونيمات المتوقعة والمرجع ثم يطبع جدولًا.
+- `src/quran_muaalem/explain_gradio.py` يولّد HTML لواجهة Gradio.
+  - `explain_for_gradio(...)` يعرض فرقًا ملونًا للفونيمات وجدول خصائص.
 
-Both use `diff-match-patch` to segment insertions, deletions, and partial matches between the predicted phonemes and the reference phoneme string.
+كلاهما يستخدم `diff-match-patch` لتقسيم الإدراجات والحذف والاختلافات الجزئية بين الفونيمات.
 
-## Output Fields
+## حقول المخرجات
 
-The `Sifa` dataclass includes these optional attributes (see `src/quran_muaalem/muaalem_typing.py`):
+فئة `Sifa` تتضمن الخصائص التالية (انظر `src/quran_muaalem/muaalem_typing.py`):
 
 - `hams_or_jahr`
 - `shidda_or_rakhawa`
@@ -31,4 +31,4 @@ The `Sifa` dataclass includes these optional attributes (see `src/quran_muaalem/
 - `istitala`
 - `ghonna`
 
-Each attribute is a `SingleUnit` with `text`, `prob`, and `idx`.
+كل خاصية هي `SingleUnit` وتحتوي على `text` و `prob` و `idx`.

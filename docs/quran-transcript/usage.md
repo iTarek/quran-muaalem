@@ -1,8 +1,8 @@
-# Usage
+# الاستخدام
 
-Key API objects come from `quran_transcript` (see `quran-transcript/src/quran_transcript/__init__.py`).
+أهم الكائنات والدوال موجودة في `quran_transcript` (راجع `quran-transcript/src/quran_transcript/__init__.py`).
 
-## Aya Object
+## كائن Aya
 
 ```python
 from quran_transcript import Aya
@@ -11,13 +11,13 @@ aya = Aya(1, 1)
 info = aya.get()
 ```
 
-`Aya` is defined in `quran-transcript/src/quran_transcript/utils.py` and provides helpers like:
+`Aya` معرف في `quran-transcript/src/quran_transcript/utils.py` ويدعم:
 
-- `get()` for full metadata
-- `get_ayat_after()` to iterate forward
-- `get_by_imlaey_words(...)` to select word spans
+- `get()` لقراءة بيانات الآية
+- `get_ayat_after()` للتنقل للأمام
+- `get_by_imlaey_words(...)` لاختيار نطاق من الكلمات
 
-## Search by Imlaey Script
+## البحث بالرسم الإملائي
 
 ```python
 from quran_transcript import search, Aya
@@ -31,9 +31,9 @@ results = search(
 uthmani_script = results[0].uthmani_script
 ```
 
-The `search` function is defined in `quran-transcript/src/quran_transcript/utils.py`.
+الدالة `search` موجودة في `quran-transcript/src/quran_transcript/utils.py`.
 
-## Phonetic Script
+## الرسم الصوتي
 
 ```python
 from quran_transcript import Aya, quran_phonetizer, MoshafAttributes
@@ -43,4 +43,4 @@ moshaf = MoshafAttributes(rewaya="hafs", madd_monfasel_len=4, madd_mottasel_len=
 phonetic = quran_phonetizer(uthmani_ref, moshaf, remove_spaces=True)
 ```
 
-`quran_phonetizer` lives in `quran-transcript/src/quran_transcript/phonetics/phonetizer.py`.
+`quran_phonetizer` موجودة في `quran-transcript/src/quran_transcript/phonetics/phonetizer.py`.

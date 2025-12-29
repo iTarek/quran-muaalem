@@ -1,11 +1,11 @@
-# Quran Transcript Overview
+# نظرة عامة على Quran Transcript
 
-The `quran-transcript` subproject is a standalone toolkit for Quran text processing, script conversion, and phonetic transcription. In this repo it lives under `quran-transcript/` and is packaged as `quran-transcript` (see `quran-transcript/pyproject.toml`).
+`quran-transcript` مشروع مستقل لمعالجة نص القرآن، والتحويل بين الرسوم، وإنشاء الرسم الصوتي. في هذا المستودع يوجد تحت `quran-transcript/` ويُعبأ كحزمة `quran-transcript` (راجع `quran-transcript/pyproject.toml`).
 
-Quran Muaalem depends on this package for:
+يعتمد المعلّم القرآني على هذه الحزمة من أجل:
 
-- `Aya` text selection
-- `quran_phonetizer` to produce the reference phonetic script
-- `MoshafAttributes` to control recitation settings
+- اختيار الآيات عبر `Aya`
+- توليد المرجع الصوتي عبر `quran_phonetizer`
+- إعدادات التلاوة عبر `MoshafAttributes`
 
-Key exports are defined in `quran-transcript/src/quran_transcript/__init__.py`.
+التصديرات الأساسية مذكورة في `quran-transcript/src/quran_transcript/__init__.py`.

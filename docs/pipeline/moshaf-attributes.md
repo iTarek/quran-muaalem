@@ -1,17 +1,17 @@
-# Moshaf Attributes
+# خصائص المصحف
 
-The phonetic conversion is controlled by `MoshafAttributes` in `quran-transcript/src/quran_transcript/phonetics/moshaf_attributes.py`. It is a `pydantic.BaseModel` with many Quran-specific recitation options (madd lengths, takbeer, and more).
+التحويل الصوتي يتحكم به كائن `MoshafAttributes` الموجود في `quran-transcript/src/quran_transcript/phonetics/moshaf_attributes.py`. وهو `pydantic.BaseModel` يحتوي على خيارات قرائية عديدة (مدود، تكبير، وغيرها).
 
-## How the UI Uses It
+## كيف تستخدمه الواجهة
 
-In `src/quran_muaalem/gradio_app.py`:
+في `src/quran_muaalem/gradio_app.py`:
 
-- `REQUIRED_MOSHAF_FIELDS` enumerates the attributes exposed in the UI.
-- `create_gradio_input_for_field(...)` introspects `MoshafAttributes.model_fields` and builds inputs.
-- `get_arabic_name(...)` and `get_arabic_attributes(...)` (from `quran_transcript.phonetics.moshaf_attributes`) provide label metadata.
+- `REQUIRED_MOSHAF_FIELDS` يحدد الحقول الظاهرة في الواجهة.
+- `create_gradio_input_for_field(...)` يبني عناصر الإدخال من `MoshafAttributes.model_fields`.
+- `get_arabic_name(...)` و `get_arabic_attributes(...)` (من `quran_transcript.phonetics.moshaf_attributes`) تضيفان تسميات عربية للحقول.
 
-To see the full list of available attributes and their defaults, open:
+للاطلاع على القائمة الكاملة والافتراضيات، افتح:
 
 - `quran-transcript/src/quran_transcript/phonetics/moshaf_attributes.py`
 
-If you want to expose more fields in the UI, add them to `REQUIRED_MOSHAF_FIELDS` in `src/quran_muaalem/gradio_app.py`.
+ولإظهار حقول إضافية في الواجهة، أضفها إلى `REQUIRED_MOSHAF_FIELDS` في `src/quran_muaalem/gradio_app.py`.

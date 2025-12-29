@@ -1,24 +1,24 @@
-# الرسم الصوتي
+# Phonetics
 
-طبقة الرسم الصوتي موجودة في `quran-transcript/src/quran_transcript/phonetics/`.
+The phonetic layer lives under `quran-transcript/src/quran_transcript/phonetics/`.
 
-أهم المكونات:
+Key pieces:
 
-- `SifaOutput` و `chunck_phonemes` في `phonetics/sifa.py`.
-- `quran_phonetizer` في `phonetics/phonetizer.py`.
-- مجموعة كبيرة من عمليات التحويل في `phonetics/operations.py`.
+- `SifaOutput` and `chunck_phonemes` in `phonetics/sifa.py`.
+- `quran_phonetizer` in `phonetics/phonetizer.py`.
+- A large set of transformation operations in `phonetics/operations.py`.
 
-## مخرجات الصفات
+## Sifa Output
 
-`SifaOutput` هو `pydantic.BaseModel` يحتوي على مجموعة فونيمات وخصائص تصنيفية مثل `hams_or_jahr` و `shidda_or_rakhawa` و `tafkheem_or_taqeeq` وغيرها. هذه هي البنية المرجعية التي يقارن بها المعلّم القرآني.
+`SifaOutput` is a `pydantic.BaseModel` with phoneme groups and categorical attributes such as `hams_or_jahr`, `shidda_or_rakhawa`, `tafkheem_or_taqeeq`, and others. This is the reference structure that Quran Muaalem compares against.
 
-## تجزئة الفونيمات
+## Chunking Phonemes
 
-`chunck_phonemes(phonetic_script)` تقسم النص الصوتي إلى مجموعات فونيمات. المعلّم القرآني يستخدم نفس التجزئة للمحاذاة (راجع `src/quran_muaalem/inference.py`).
+`chunck_phonemes(phonetic_script)` splits a phonetic script string into grouped phonemes. Quran Muaalem uses this same chunking to align predicted outputs with the reference (see `src/quran_muaalem/inference.py`).
 
-## مخطط النسخ (من `quran-transcript/README.md`)
+## Transcription Scheme (from `quran-transcript/README.md`)
 
-### الحروف (43)
+### Phonemes (43)
 
 | Phoneme Name | Symbol | Arabic |
 | --- | --- | --- |
@@ -65,7 +65,7 @@
 | sakt | ۜ | سكت |
 | dama_mokhtalasa | ؙ | ضمة مختلسة (عند الروم في تأمنا) |
 
-### صفات الحروف (10)
+### Sifat (10)
 
 | Sifat (English) | Sifat (Arabic) | Attributes (English) | Attributes (Arabic) |
 | --- | --- | --- | --- |

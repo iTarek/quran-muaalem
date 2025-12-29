@@ -1,17 +1,17 @@
-# FAQ
+# الأسئلة الشائعة
 
-## Why do I get a sampling rate error?
+## لماذا تظهر مشكلة معدل العينة؟
 
-`Muaalem.__call__` enforces `sampling_rate == 16000` in `src/quran_muaalem/inference.py`. Make sure your audio is resampled to 16 kHz.
+الدالة `Muaalem.__call__` تشترط `sampling_rate == 16000` في `src/quran_muaalem/inference.py`. تأكد من إعادة أخذ العينات إلى 16 kHz.
 
-## The UI fails to load audio files
+## واجهة المستخدم لا تقرأ ملفات الصوت
 
-Install system audio dependencies (see `README.md`):
+ثبّت اعتماديات الصوت النظامية (حسب `README.md`):
 
 ```bash
 sudo apt-get install -y ffmpeg libsndfile1 portaudio19-dev
 ```
 
-## How do I change the model checkpoint?
+## كيف أغير نقطة تحميل النموذج؟
 
-Pass `model_name_or_path` when constructing `Muaalem` or update `model_id` in `src/quran_muaalem/gradio_app.py`.
+مرّر `model_name_or_path` عند إنشاء `Muaalem` أو عدّل `model_id` في `src/quran_muaalem/gradio_app.py`.

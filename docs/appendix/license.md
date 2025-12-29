@@ -1,5 +1,5 @@
-# License
+# الترخيص
 
-This project is licensed under the MIT License.
+المشروع مرخّص وفق رخصة MIT.
 
-See `LICENSE` in the repo root for the full text.
+راجع `LICENSE` في جذر المستودع للنص الكامل.
