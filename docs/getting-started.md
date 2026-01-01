@@ -59,4 +59,20 @@ wave, _ = load("./assets/test.wav", sr=sampling_rate, mono=True)
 outs = muaalem([wave], [ref], sampling_rate=sampling_rate)
 ```
 
+## تنزيل النموذج والتخزين المؤقت
+
+يتم تحميل النموذج من Hugging Face عند أول تشغيل. يمكن التحكم بمسارات التخزين عبر متغيرات البيئة:
+
+- `HF_HOME`
+- `HUGGINGFACE_HUB_CACHE`
+- `TRANSFORMERS_CACHE`
+
+(انظر `Dockerfile` كمثال).
+
+## استكشاف الأخطاء الشائعة
+
+- **`ValueError: sampling_rate has to be 16000`** → أعد أخذ عينة الصوت إلى 16 kHz.
+- **عدم وجود `ffmpeg`** → ثبته عبر مدير الحزم.
+- **بطء الاستدلال على CPU** → استخدم GPU أو قلل طول المقطع الصوتي.
+
 لشرح أوسع، انتقل إلى صفحة واجهة بايثون.
