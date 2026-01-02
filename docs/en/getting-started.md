@@ -26,7 +26,7 @@ UI extras (adds Gradio + audio tooling):
 pip install "quran-muaalem[ui]"
 ```
 
-If you use `uv`, the README documents an all-in-one command for the UI:
+If you use `uv`, the README documents an all‑in‑one command for the UI:
 
 ```bash
 uvx --no-cache --from https://github.com/obadx/quran-muaalem.git[ui] quran-muaalem-ui
@@ -58,5 +58,21 @@ muaalem = Muaalem(device=device)
 wave, _ = load("./assets/test.wav", sr=sampling_rate, mono=True)
 outs = muaalem([wave], [ref], sampling_rate=sampling_rate)
 ```
+
+## Model download and cache
+
+The model is pulled from Hugging Face on first use. Cache locations are controlled by environment variables such as:
+
+- `HF_HOME`
+- `HUGGINGFACE_HUB_CACHE`
+- `TRANSFORMERS_CACHE`
+
+(see `Dockerfile` for example defaults).
+
+## Troubleshooting (common cases)
+
+- **`ValueError: sampling_rate has to be 16000`** → resample your audio to 16 kHz.
+- **Missing `ffmpeg`** → install it via your system package manager.
+- **Slow inference on CPU** → use GPU or shorten audio segments.
 
 For a full walkthrough, see the Quran Muaalem API page.

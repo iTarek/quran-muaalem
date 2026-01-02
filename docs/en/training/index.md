@@ -1,5 +1,15 @@
 # Training and Data Overview
 
-This repo documents the data prep pipeline in `README.md` under "خطوات مختصرة للتطوير". The steps reference external repos for collection, segmentation, transcription, correction, and script conversion.
+This section summarizes the data and training pipeline and provides guidance for reproducible research.
 
-This section summarizes those steps and links to the tools used.
+What you’ll find here:
+
+- **Data sources** and external tooling.
+- **Pipeline steps** from audio to multi‑level labels.
+- **Evaluation metrics** to compare models fairly.
+
+Start with:
+
+- **Data Sources**
+- **Pipeline Steps**
+- **Evaluation and Metrics**

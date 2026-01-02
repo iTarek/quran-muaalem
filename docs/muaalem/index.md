@@ -1,25 +1,44 @@
 # نظرة عامة على المعلّم القرآني
 
-المعلّم القرآني هو طبقة الاستدلال التي تقارن التلاوة بمرجع صوتي وتُخرج الفونيمات وخصائص التجويد. نقاط الدخول الأساسية:
+المعلّم القرآني هو طبقة الاستدلال التي **تقارن التلاوة بمرجع صوتي** وتنتج مخرجات متعددة المستويات: **فونيمات** + **صفات تجويدية** لكل مجموعة فونيمات.
 
-- الفئة `Muaalem` في `src/quran_muaalem/inference.py`
-- واجهة Gradio في `src/quran_muaalem/gradio_app.py`
+نقاط الدخول الأساسية:
+
+- الفئة `Muaalem` في `src/quran_muaalem/inference.py`.
+- واجهة Gradio في `src/quran_muaalem/gradio_app.py`.
+
+## لماذا هذا مهم للباحثين؟
+
+- النموذج لا يقوم بالنسخ فقط؛ بل ينتج **طبقة صفات** (سِفَات الحروف) قابلة للقياس والتحليل.
+- هذا يتيح دراسات مقارنة أدق من WER/PER التقليدي.
 
 ## مسار الاستدلال الأساسي
 
-داخل `Muaalem.__call__` في `src/quran_muaalem/inference.py`:
+داخل `Muaalem.__call__`:
 
-1. يتم ترميز المرجع الصوتي عبر `MultiLevelTokenizer`.
-2. تُستخرج خصائص الصوت بـ `AutoFeatureExtractor` من `transformers`.
-3. النموذج `Wav2Vec2BertForMultilevelCTC` ينفذ المرور الأمامي.
-4. فك الشيفرة يتم عبر `phonemes_level_greedy_decode` و `multilevel_greedy_decode` في `src/quran_muaalem/decode.py`.
-5. تُبنى خصائص كل مجموعة فونيمات داخل كائنات `Sifa` وتُعاد كـ `MuaalemOutput`.
+1. ترميز المرجع الصوتي عبر `MultiLevelTokenizer`.
+2. استخراج خصائص الصوت عبر `AutoFeatureExtractor`.
+3. تشغيل نموذج `Wav2Vec2BertForMultilevelCTC`.
+4. فك الشيفرة عبر `phonemes_level_greedy_decode` و `multilevel_greedy_decode`.
+5. تجميع صفات كل مجموعة فونيمات في `Sifa` وإرجاع `MuaalemOutput`.
 
-هذا يعني أنك تمرر الصوت مع مرجع صوتي مُستخرج من `quran_transcript.quran_phonetizer`.
+> **ملاحظة:** المرجع الصوتي يُبنى باستخدام `quran_transcript.quran_phonetizer`.
+
+## القيود العملية
+
+- معدل العينة المطلوب: **16 kHz**.
+- جودة النتائج تعتمد على جودة المرجع (الرسم الصوتي) وجودة الصوت.
+- قيم الاحتمالات (`probs`) ليست مُعايرة افتراضيًا.
+
+## أين تجد التفاصيل؟
+
+- **واجهة بايثون**: شرح المدخلات والمخرجات والأمثلة.
+- **المخرجات**: مخطط تفصيلي للـ `MuaalemOutput`.
+- **المعمارية**: تفاصيل CTC متعدد المستويات.
 
 ## ملفات أساسية
 
 - `src/quran_muaalem/inference.py` — فئة النموذج ومسار الاستدلال.
-- `src/quran_muaalem/decode.py` — منطق فك الشيفرة والمحاذاة.
-- `src/quran_muaalem/muaalem_typing.py` — تعريفات المخرجات (`Unit`, `Sifa`, `MuaalemOutput`).
+- `src/quran_muaalem/decode.py` — فك الشيفرة والمحاذاة.
+- `src/quran_muaalem/muaalem_typing.py` — تعريف المخرجات.
 - `src/quran_muaalem/gradio_app.py` — واجهة المستخدم وإعدادات المصحف.

@@ -65,6 +65,7 @@ export default defineConfig({
               { text: 'نظرة عامة', link: '/training/' },
               { text: 'مصادر البيانات', link: '/training/data-sources' },
               { text: 'خطوات المسار', link: '/training/pipeline' },
+              { text: 'التقييم والقياسات', link: '/training/evaluation' },
             ],
           },
           {
@@ -149,6 +150,7 @@ export default defineConfig({
               { text: 'Overview', link: '/en/training/' },
               { text: 'Data Sources', link: '/en/training/data-sources' },
               { text: 'Pipeline Steps', link: '/en/training/pipeline' },
+              { text: 'Evaluation and Metrics', link: '/en/training/evaluation' },
             ],
           },
           {

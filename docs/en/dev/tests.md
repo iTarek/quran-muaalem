@@ -1,11 +1,13 @@
 # Tests
 
-There are two test suites:
+There are two test locations:
 
 - Quran Muaalem: `tests/`
 - Quran Transcript: `quran-transcript/tests/`
 
-Run from repo root:
+## Pytest runs
+
+From repo root:
 
 ```bash
 pytest
@@ -17,9 +19,13 @@ Optional flag (see `tests/conftest.py`):
 pytest --skip-slow
 ```
 
-For the `quran-transcript` subproject, you can also run from its folder:
+From the `quran-transcript` folder:
 
 ```bash
 cd quran-transcript
 pytest
 ```
+
+## Note on script‑style tests
+
+Some files under both `tests/` directories are **manual scripts** (they run only under `__main__`). These are useful for exploratory evaluation but are not collected by pytest. If you want them as automated tests, convert them into pytest functions and add fixtures.
