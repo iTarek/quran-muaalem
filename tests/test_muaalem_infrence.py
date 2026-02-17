@@ -39,7 +39,7 @@ if __name__ == "__main__":
     cache_dir = "./assets/test_cache"
     sampling_rate = 16000
     audio_path = "./assets/test.wav"
-    device = "cpu"
+    device = "cuda"
     reload = True
 
     uthmani_ref = Aya(8, 75).get_by_imlaey_words(17, 9).uthmani
