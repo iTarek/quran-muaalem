@@ -66,7 +66,7 @@ class MergeMatch:
         self.start_b_idx = match.start_b_idx
 
 
-def merge_lists_with_overlap(A, B, num_ignore=2, max_B_offset=2):
+def merge_lists_with_overlap(A, B, max_B_offset=2):
     """
     Merge two lists by finding the maximum overlap between the end of A and beginning of B.
 
@@ -206,7 +206,7 @@ def decode_phonemes(ids: list, vocab):
 
 
 if __name__ == "__main__":
-    window_ms = 6000
+    window_ms = 8000
     chunk_ms = 500
     padding_ms = 0
     window_ms = int(fix_chunk_length(window_ms))

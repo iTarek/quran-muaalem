@@ -310,6 +310,7 @@ class CTCDecodeOut:
     p: torch.FloatTensor
 
 
+# BUG: trailing zero id at the end
 def ctc_decode(
     batch_ids: torch.LongTensor,
     batch_probs: torch.FloatTensor,
@@ -326,7 +327,9 @@ def ctc_decode(
 
     """
     outs = []
-    assert batch_ids.shape == batch_probs.shape
+    assert batch_ids.shape == batch_probs.shape, (
+        f"Input Shape mismatch: `batch_ids.shape={batch_ids.shape}`, batch_probs.shape={batch_probs.shape}"
+    )
     for seq_idx, seq in enumerate(batch_ids):
         if collapse_consecutive:
             tokens = []

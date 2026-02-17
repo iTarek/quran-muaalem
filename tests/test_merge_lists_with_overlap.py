@@ -607,7 +607,7 @@ from display_lists_diff import print_colored_diff_summary
     ],
 )
 def test_merge_lists_with_overlap(A, B, num_ignore, exp):
-    out = merge_lists_with_overlap(A, B, num_ignore)
-    print(f"A: {A}\nB: {B}\n num_ignore: {num_ignore}\n out: {out}\n exp: {exp}")
+    out = merge_lists_with_overlap(A, B)
+    print(f"A: {A}\nB: {B}\nout: {out}\n exp: {exp}")
     print_colored_diff_summary(exp, out)
     assert out == exp
