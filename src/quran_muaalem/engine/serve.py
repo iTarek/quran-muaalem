@@ -5,6 +5,7 @@ import librosa
 import torch
 import litserve as ls
 from transformers import AutoFeatureExtractor
+import numpy as np
 
 from ..modeling.modeling_multi_level_ctc import Wav2Vec2BertForMultilevelCTC
 
@@ -14,14 +15,18 @@ class QuranMuaalemAPI(ls.LitAPI):
         self,
         model_name_or_path: str = "obadx/muaalem-model-v3_2",
         dtype: torch.dtype = torch.bfloat16,
-        max_batch_size: int = 32,
-        batch_timeout: float = 2.0,
+        max_audio_seconds: float = 15,
+        *args,
+        **kwargs,
     ):
-        super().__init__()
+        super().__init__(*args, **kwargs)
         self.model_name_or_path = model_name_or_path
         self.dtype = dtype
-        self.max_batch_size = max_batch_size
-        self.batch_timeout = batch_timeout
+        self.max_audio_seconds = max_audio_seconds
+        self.sampling_rate = 16000
+        self.max_features = int(
+            np.ceil((self.sampling_rate * self.max_audio_seconds - 400) / (160 * 2))
+        )
 
     def setup(self, device):
         self.device = device
@@ -36,12 +41,19 @@ class QuranMuaalemAPI(ls.LitAPI):
         audio_file = request["file"]
         audio_bytes = audio_file.file.read()
 
-        audio_array, sr = librosa.load(io.BytesIO(audio_bytes), sr=16000, mono=True)
+        audio_array, sr = librosa.load(
+            io.BytesIO(audio_bytes),
+            sr=self.sampling_rate,
+            mono=True,
+            duration=self.max_audio_seconds,  # Truncating input speech to max_audio_seconds
+        )
 
         features = self.processor(
             audio_array,
             sampling_rate=sr,
             return_tensors="pt",
+            padding="max_length",
+            max_length=self.max_features,
         )
 
         return {
