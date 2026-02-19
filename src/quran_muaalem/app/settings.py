@@ -23,3 +23,8 @@ class AppSettings(BaseSettings):
         ge=0.0,
         le=1.0,
     )
+    max_workers: int = Field(
+        default=4,
+        description="Number of worker processes for phonetic search executor.",
+        ge=1,
+    )

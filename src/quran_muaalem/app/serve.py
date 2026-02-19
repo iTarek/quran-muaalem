@@ -1,15 +1,17 @@
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
-from pathlib import Path
 from typing import Optional
 
 import httpx
 from fastapi import FastAPI, UploadFile, File, Query
-from pydantic import BaseModel
 
-from quran_transcript.phonetics.search import PhoneticSearch, PhonmesSearhResult
+from quran_transcript.phonetics.search import (
+    PhoneticSearch,
+    NoPhonemesSearchResult,
+)
 
 from .settings import AppSettings
+from .types import SearchResponse, SearchResultResponse
 
 
 app_settings = AppSettings()
@@ -23,7 +25,7 @@ _phonetic_search: Optional[PhoneticSearch] = None
 def get_executor() -> ThreadPoolExecutor:
     global _executor
     if _executor is None:
-        _executor = ThreadPoolExecutor(max_workers=2)
+        _executor = ThreadPoolExecutor(max_workers=app_settings.max_workers)
     return _executor
 
 
@@ -32,22 +34,6 @@ def get_phonetic_search() -> PhoneticSearch:
     if _phonetic_search is None:
         _phonetic_search = PhoneticSearch()
     return _phonetic_search
-
-
-class SearchResultResponse(BaseModel):
-    sura_idx: int
-    aya_idx: int
-    uthmani_word_idx: int
-    uthmani_char_idx_start: int
-    uthmani_char_idx_end: int
-    phonemes_idx_start: int
-    phonemes_idx_end: int
-    uthmani_text: str
-
-
-class SearchResponse(BaseModel):
-    phonemes: str
-    results: list[SearchResultResponse]
 
 
 async def call_engine_predict(audio_file: UploadFile) -> str:
@@ -62,9 +48,13 @@ async def call_engine_predict(audio_file: UploadFile) -> str:
 
 def run_phonetic_search(
     phonemes: str, error_ratio: float
-) -> list[SearchResultResponse]:
+) -> tuple[list[SearchResultResponse], str | None]:
     ph_search = get_phonetic_search()
-    results = ph_search.search(phonemes, error_ratio=error_ratio)
+    try:
+        results = ph_search.search(phonemes, error_ratio=error_ratio)
+    except NoPhonemesSearchResult:
+        return [], "No results found. Try increasing error_ratio."
+
     response_results = []
     for r in results:
         uthmani_text = ph_search.get_uthmani_from_result(r)
@@ -80,7 +70,7 @@ def run_phonetic_search(
                 uthmani_text=uthmani_text,
             )
         )
-    return response_results
+    return response_results, None
 
 
 @app.post("/search/voice", response_model=SearchResponse)
@@ -94,11 +84,11 @@ async def search_voice(
     phonemes = await call_engine_predict(file)
 
     loop = asyncio.get_event_loop()
-    results = await loop.run_in_executor(
+    results, message = await loop.run_in_executor(
         get_executor(),
         run_phonetic_search,
         phonemes,
         error_ratio,
     )
 
-    return SearchResponse(phonemes=phonemes, results=results)
+    return SearchResponse(phonemes=phonemes, results=results, message=message)
