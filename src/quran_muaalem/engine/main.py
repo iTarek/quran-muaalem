@@ -3,7 +3,8 @@ import litserve as ls
 from quran_muaalem.engine.serve import QuranMuaalemAPI
 from quran_muaalem.engine.settings import EngineSettings
 
-if __name__ == "__main__":
+
+def main():
     engine_settings = EngineSettings()
 
     # Instantiate the API with engine_settings
@@ -26,3 +27,7 @@ if __name__ == "__main__":
 
     # Run the server
     server.run(port=engine_settings.port)
+
+
+if __name__ == "__main__":
+    main()

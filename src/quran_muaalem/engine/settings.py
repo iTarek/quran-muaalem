@@ -26,7 +26,7 @@ class EngineSettings(BaseSettings):
     max_batch_size: int = Field(
         default=128,
         description="Maximum number of requests to batch together. Must be >= 1.",
-        ge=1,
+        ge=2,
     )
     batch_timeout: float = Field(
         default=0.4,
@@ -62,7 +62,7 @@ class EngineSettings(BaseSettings):
         ge=1,
     )
     timeout: float = Field(
-        default=30.0,
+        default=90.0,
         description="Request timeout in seconds.",
         gt=0.0,
     )

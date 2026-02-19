@@ -55,6 +55,7 @@ engine = [
 
 [project.scripts]
 quran-muaalem-ui = "quran_muaalem.gradio_app:main"
+quran-muaalem-engine = "quran_muaalem.engine.main:main"
 
 [project.urls]
 Homepage = "https://github.com/obadx/quran-muaalem"
