@@ -97,8 +97,6 @@ class QuranMuaalemAPI(ls.LitAPI):
 
     def predict(self, x):
         input_features, attention_mask = x
-        print("Shape")
-        print(input_features.shape)
         with torch.inference_mode():
             level_to_logits = self.model(
                 input_features, attention_mask, return_dict=False

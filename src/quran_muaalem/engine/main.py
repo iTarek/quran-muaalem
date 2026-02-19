@@ -1,7 +1,7 @@
 import litserve as ls
 
-from quran_muaalem.engine.serve import QuranMuaalemAPI
-from quran_muaalem.engine.settings import EngineSettings
+from .serve import QuranMuaalemAPI
+from .settings import EngineSettings
 
 
 def main():
