@@ -21,6 +21,7 @@ async def send_request(
     try:
         resp = await client.post(url, files=files)
         resp.raise_for_status()
+        # print(resp.json())
     except Exception as e:
         print(f"Request {idx} failed: {e}")
         return None

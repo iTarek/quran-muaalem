@@ -8,6 +8,30 @@ from transformers import AutoFeatureExtractor
 import numpy as np
 
 from ..modeling.modeling_multi_level_ctc import Wav2Vec2BertForMultilevelCTC
+from ..modeling.multi_level_tokenizer import MultiLevelTokenizer
+
+
+def simple_ctc_decode(
+    batch_arr: list[list[int]], blank_id=0, collapse_consecutive=True
+) -> list[list[int]]:
+    decoded_list = []
+    for seq in batch_arr:
+        if collapse_consecutive:
+            tokens = []
+            prev = blank_id
+            for current in seq:
+                if current == blank_id:
+                    prev = blank_id
+                    continue
+                if current == prev:
+                    continue
+                tokens.append(current)
+                prev = current
+            decoded_list.append(tokens)
+        else:
+            tokens = seq[seq != blank_id]
+            decoded_list.append(tokens)
+    return decoded_list
 
 
 class QuranMuaalemAPI(ls.LitAPI):
@@ -27,6 +51,7 @@ class QuranMuaalemAPI(ls.LitAPI):
         self.max_features = int(
             np.ceil((self.sampling_rate * self.max_audio_seconds - 400) / (160 * 2))
         )
+        self.multi_level_tokenizer = MultiLevelTokenizer(self.model_name_or_path)
 
     def setup(self, device):
         self.device = device
@@ -107,4 +132,14 @@ class QuranMuaalemAPI(ls.LitAPI):
         phonemes_probs = level_to_probs["phonemes"]
         batch_probs, batch_ids = phonemes_probs.topk(1, dim=-1)
 
-        return {"phonemes": batch_ids.tolist()}
+        ph_decoded_ids = simple_ctc_decode(batch_ids)
+
+        # TODO: make it more abstract in  a function
+        phonemes_level = ""
+        for idx in ph_decoded_ids[0]:
+            if idx != 0:
+                phonemes_level += self.multi_level_tokenizer.id_to_vocab["phonemes"][
+                    int(idx)
+                ]
+
+        return {"phonemes": phonemes_level}
