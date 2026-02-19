@@ -1,3 +1,5 @@
+import os
+
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
@@ -24,7 +26,7 @@ class AppSettings(BaseSettings):
         le=1.0,
     )
     max_workers: int = Field(
-        default=4,
-        description="Number of worker processes for phonetic search executor.",
+        default=max(1, (os.cpu_count() or 4) // 2),
+        description="Number of worker threads for phonetic search executor.",
         ge=1,
     )
