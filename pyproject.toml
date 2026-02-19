@@ -17,7 +17,7 @@ readme = "README.md"
 dependencies = [
     "diff-match-patch>=20241021",
     "numpy>=2.2.6",
-    "quran-transcript>=0.1.0",
+    "quran-transcript>=0.5.1",
     "rich>=14.1.0",
     "torch>=2.7.0",
     "transformers>=4.55.0",
@@ -47,15 +47,18 @@ ui = [
     "moviepy>=2.2.1",
 ]
 engine = [
+    "fastapi>=0.116.1",
     "httpx>=0.28.1",
     "litserve>=0.2.17",
     "pydantic-settings>=2.13.1",
+    "uvicorn>=0.35.0",
 ]
 
 
 [project.scripts]
 quran-muaalem-ui = "quran_muaalem.gradio_app:main"
 quran-muaalem-engine = "quran_muaalem.engine.main:main"
+quran-muaalem-app = "quran_muaalem.app:main"
 
 [project.urls]
 Homepage = "https://github.com/obadx/quran-muaalem"
