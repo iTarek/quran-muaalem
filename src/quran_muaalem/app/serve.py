@@ -19,6 +19,7 @@ from .types import (
     CorrectRecitationResponse,
     CorrectRecitationRequest,
     ReciterErrorResponse,
+    PhonemesSearchSpanApp,
 )
 
 
@@ -80,13 +81,20 @@ def run_phonetic_search(
         uthmani_text = ph_search.get_uthmani_from_result(r)
         response_results.append(
             SearchResultResponse(
-                sura_idx=r.start.sura_idx,
-                aya_idx=r.start.aya_idx,
-                uthmani_word_idx=r.start.uthmani_word_idx,
-                uthmani_char_idx_start=r.start.uthmani_char_idx,
-                uthmani_char_idx_end=r.end.uthmani_char_idx,
-                phonemes_idx_start=r.start.phonemes_idx,
-                phonemes_idx_end=r.end.phonemes_idx,
+                start=PhonemesSearchSpanApp(
+                    sura_idx=r.start.sura_idx,
+                    aya_idx=r.start.aya_idx,
+                    uthmani_word_idx=r.start.uthmani_word_idx,
+                    uthmani_char_idx=r.start.uthmani_char_idx,
+                    phonemes_idx=r.start.phonemes_idx,
+                ),
+                end=PhonemesSearchSpanApp(
+                    sura_idx=r.end.sura_idx,
+                    aya_idx=r.end.aya_idx,
+                    uthmani_word_idx=r.end.uthmani_word_idx,
+                    uthmani_char_idx=r.end.uthmani_char_idx,
+                    phonemes_idx=r.end.phonemes_idx,
+                ),
                 uthmani_text=uthmani_text,
             )
         )
@@ -179,13 +187,8 @@ async def correct_recitation(
     )
 
     return CorrectRecitationResponse(
-        sura_idx=best_result.sura_idx,
-        aya_idx=best_result.aya_idx,
-        uthmani_word_idx=best_result.uthmani_word_idx,
-        uthmani_char_idx_start=best_result.uthmani_char_idx_start,
-        uthmani_char_idx_end=best_result.uthmani_char_idx_end,
-        phonemes_idx_start=best_result.phonemes_idx_start,
-        phonemes_idx_end=best_result.phonemes_idx_end,
+        start=best_result.start,
+        end=best_result.end,
         predicted_phonemes=predicted_phonemes,
         reference_phonemes=reference_phonemes,
         uthmani_text=best_result.uthmani_text,

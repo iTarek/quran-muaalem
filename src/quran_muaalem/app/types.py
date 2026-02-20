@@ -13,25 +13,24 @@ DEFAULT_MOSHAF = MoshafAttributes(
 )
 
 
-class SearchResultResponse(BaseModel):
-    """Result of a phonetic search match."""
+class PhonemesSearchSpanApp(BaseModel):
+    """Represents a position in the Uthmani Quran text (App version)."""
 
     sura_idx: int = Field(description="Sura number (1-114)")
     aya_idx: int = Field(description="Aya number within the sura")
     uthmani_word_idx: int = Field(
         description="0-based index of the word within the aya"
     )
-    uthmani_char_idx_start: int = Field(
-        description="0-based start character index within the word"
-    )
-    uthmani_char_idx_end: int = Field(
-        description="0-based end character index within the word (exclusive)"
-    )
-    phonemes_idx_start: int = Field(
-        description="0-based start index in phoneme sequence"
-    )
-    phonemes_idx_end: int = Field(
-        description="0-based end index in phoneme sequence (exclusive)"
+    uthmani_char_idx: int = Field(description="0-based character index within the word")
+    phonemes_idx: int = Field(description="0-based index in the phoneme sequence")
+
+
+class SearchResultResponse(BaseModel):
+    """Result of a phonetic search match."""
+
+    start: PhonemesSearchSpanApp = Field(description="Start position of the match")
+    end: PhonemesSearchSpanApp = Field(
+        description="End position of the match (exclusive)"
     )
     uthmani_text: str = Field(description="Matched Uthmani text snippet")
 
@@ -72,20 +71,9 @@ class ReciterErrorResponse(BaseModel):
 class CorrectRecitationResponse(BaseModel):
     """Response from the correct-recitation endpoint."""
 
-    sura_idx: int = Field(description="Sura number (1-114)")
-    aya_idx: int = Field(description="Aya number within the sura")
-    uthmani_word_idx: int = Field(description="0-based word index within the aya")
-    uthmani_char_idx_start: int = Field(
-        description="0-based start char index within the word"
-    )
-    uthmani_char_idx_end: int = Field(
-        description="0-based end char index within the word (exclusive)"
-    )
-    phonemes_idx_start: int = Field(
-        description="0-based start index in phoneme sequence"
-    )
-    phonemes_idx_end: int = Field(
-        description="0-based end index in phoneme sequence (exclusive)"
+    start: PhonemesSearchSpanApp = Field(description="Start position of the match")
+    end: PhonemesSearchSpanApp = Field(
+        description="End position of the match (exclusive)"
     )
     predicted_phonemes: str = Field(description="Phonetic text from audio prediction")
     reference_phonemes: str = Field(
