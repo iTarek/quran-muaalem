@@ -52,13 +52,36 @@ async def send_correct_recitation_request(
 ):
     """Send a single /correct-recitation request and return its latency in seconds."""
     files = {"file": ("test.wav", file_bytes, "audio/wav")}
-    data = {"moshaf": moshaf, "error_ratio": error_ratio}
+    json_data = {"moshaf": moshaf, "error_ratio": error_ratio}
     start = time.perf_counter()
     try:
-        resp = await client.post(f"{url}/correct-recitation", files=files, data=data)
+        resp = await client.post(
+            f"{url}/correct-recitation", files=files, json=json_data
+        )
         resp.raise_for_status()
         if idx == 0:
             print("Sample correct-recitation response:", resp.json())
+    except Exception as e:
+        print(f"Request {idx} failed: {e}")
+        return None
+    end = time.perf_counter()
+    return end - start
+
+
+async def send_transcript_request(
+    client: httpx.AsyncClient,
+    url: str,
+    file_bytes: bytes,
+    idx: int,
+):
+    """Send a single /transcript request and return its latency in seconds."""
+    files = {"file": ("test.wav", file_bytes, "audio/wav")}
+    start = time.perf_counter()
+    try:
+        resp = await client.post(f"{url}/transcript", files=files)
+        resp.raise_for_status()
+        if idx == 0:
+            print("Sample transcript response:", resp.json())
     except Exception as e:
         print(f"Request {idx} failed: {e}")
         return None
@@ -112,15 +135,30 @@ async def load_test(
             tasks = [bounded_send(i) for i in range(total_requests)]
             return await asyncio.gather(*tasks)
 
+    async def run_transcript():
+        async with httpx.AsyncClient(limits=limits, timeout=30.0) as client:
+            semaphore = asyncio.Semaphore(concurrency)
+
+            async def bounded_send(idx):
+                async with semaphore:
+                    return await send_transcript_request(client, url, file_bytes, idx)
+
+            tasks = [bounded_send(i) for i in range(total_requests)]
+            return await asyncio.gather(*tasks)
+
     async def run_all():
         search_task = asyncio.create_task(run_search_voice())
         correct_task = asyncio.create_task(run_correct_recitation())
-        search_latencies, correct_latencies = await asyncio.gather(
-            search_task, correct_task
-        )
+        transcript_task = asyncio.create_task(run_transcript())
+        (
+            search_latencies,
+            correct_latencies,
+            transcript_latencies,
+        ) = await asyncio.gather(search_task, correct_task, transcript_task)
         return {
             "search-voice": search_latencies,
             "correct-recitation": correct_latencies,
+            "transcript": transcript_latencies,
         }
 
     print(
@@ -133,9 +171,12 @@ async def load_test(
     elif endpoint == "search-voice":
         latencies = await run_search_voice()
         results = {"search-voice": latencies}
-    else:
+    elif endpoint == "correct-recitation":
         latencies = await run_correct_recitation()
         results = {"correct-recitation": latencies}
+    else:
+        latencies = await run_transcript()
+        results = {"transcript": latencies}
 
     end_time = time.perf_counter()
 
@@ -207,7 +248,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--endpoint",
         "-E",
-        choices=["search-voice", "correct-recitation", "all"],
+        choices=["search-voice", "correct-recitation", "transcript", "all"],
         default="all",
         help="API endpoint to test",
     )

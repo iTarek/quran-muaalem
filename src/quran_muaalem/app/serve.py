@@ -3,7 +3,7 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import Optional
 
 import httpx
-from fastapi import FastAPI, UploadFile, File, Query, Body
+from fastapi import FastAPI, UploadFile, File, Query, Body, Form
 
 from quran_transcript import quran_phonetizer, explain_error
 from quran_transcript.phonetics.moshaf_attributes import MoshafAttributes
@@ -22,7 +22,15 @@ from .types import (
     PhonemesSearchSpanApp,
     TajweedRuleApp,
     TajweedRuleNameApp,
+    TranscriptResponse,
 )
+
+# TODO:
+"""
+* [ ] Add timeout for both PHonmems threadpool and correct
+* [ ] For both srearch and correct make the file is optional input with input phonems dirctorly
+* [ ] Add transcribe end point as a proxy for the predict one
+"""
 
 
 app_settings = AppSettings()
@@ -117,6 +125,7 @@ def run_phonetization_and_error(
     moshaf: MoshafAttributes,
     predicted_phonemes: str,
 ) -> tuple[str, list[ReciterErrorResponse]]:
+    print(moshaf.madd_aared_len)
     ref_phonetization = quran_phonetizer(uthmani_text, moshaf, remove_spaces=True)
 
     errors = explain_error(
@@ -188,8 +197,9 @@ async def search_voice(
 @app.post("/correct-recitation", response_model=CorrectRecitationResponse)
 async def correct_recitation(
     file: UploadFile = File(...),
-    request: CorrectRecitationRequest = Body(...),
+    request: CorrectRecitationRequest = Query(...),
 ):
+    print(request.moshaf.madd_aared_len)
     moshaf = request.moshaf
     error_ratio = request.error_ratio
 
@@ -225,3 +235,12 @@ async def correct_recitation(
         uthmani_text=best_result.uthmani_text,
         errors=errors,
     )
+
+
+@app.post("/transcript", response_model=TranscriptResponse)
+async def transcript(
+    file: UploadFile = File(...),
+):
+    """Transcribe audio to phonetic script (proxy to engine)."""
+    phonemes = await call_engine_predict(file)
+    return TranscriptResponse(phonemes=phonemes, sifat=None)

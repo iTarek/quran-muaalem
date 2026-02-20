@@ -2,6 +2,7 @@ from typing import Optional, Literal
 
 from pydantic import BaseModel, Field
 
+from quran_transcript import SifaOutput
 from quran_transcript.phonetics.moshaf_attributes import MoshafAttributes
 
 DEFAULT_MOSHAF = MoshafAttributes(
@@ -63,6 +64,16 @@ class SearchResponse(BaseModel):
     )
 
 
+class TranscriptResponse(BaseModel):
+    """Response from the /transcript endpoint."""
+
+    phonemes: str = Field(description="Phonetic transcription from audio")
+    sifat: list[SifaOutput] | None = Field(
+        default=None,
+        description="Sifa (attributes) - currently not implemented, always None",
+    )
+
+
 class ReciterErrorResponse(BaseModel):
     """Error in recitation analysis."""
 
@@ -118,9 +129,7 @@ class CorrectRecitationResponse(BaseModel):
 class CorrectRecitationRequest(BaseModel):
     """Request body for correct-recitation endpoint."""
 
-    moshaf: MoshafAttributes = Field(
-        default=DEFAULT_MOSHAF, description="Moshaf attributes for phonetization"
-    )
+    moshaf: MoshafAttributes = Field(description="Moshaf attributes for phonetization")
     error_ratio: float = Field(
         default=0.1,
         description="Maximum allowed Levenshtein distance as a fraction of query length.",
