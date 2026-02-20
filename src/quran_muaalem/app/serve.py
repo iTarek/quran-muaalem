@@ -4,6 +4,7 @@ from typing import Optional
 
 import httpx
 from fastapi import FastAPI, UploadFile, File, Query, Body, Form
+from fastapi.exceptions import HTTPException
 
 from quran_transcript import quran_phonetizer, explain_error
 from quran_transcript.phonetics.moshaf_attributes import MoshafAttributes
@@ -187,7 +188,9 @@ async def search(
     elif phonetic_text:
         phonemes = phonetic_text
     else:
-        raise ValueError()
+        raise HTTPException(
+            status_code=422, detail="Either 'file' or 'phonetic_text' must be provided"
+        )
 
     loop = asyncio.get_event_loop()
     results, message = await loop.run_in_executor(
