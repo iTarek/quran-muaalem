@@ -173,15 +173,21 @@ def run_phonetization_and_error(
     return ref_phonetization.phonemes, error_responses
 
 
-@app.post("/search/voice", response_model=SearchResponse)
-async def search_voice(
-    file: UploadFile = File(...),
+@app.post("/search", response_model=SearchResponse)
+async def search(
+    file: UploadFile = File(default=None),
+    phonetic_text: str = Query(default=None),
     error_ratio: float = Query(default=None),
 ):
     if error_ratio is None:
         error_ratio = app_settings.error_ratio
 
-    phonemes = await call_engine_predict(file)
+    if file:
+        phonemes = await call_engine_predict(file)
+    elif phonetic_text:
+        phonemes = phonetic_text
+    else:
+        raise ValueError()
 
     loop = asyncio.get_event_loop()
     results, message = await loop.run_in_executor(

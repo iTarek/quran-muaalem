@@ -19,27 +19,45 @@ DEFAULT_MOSHAF = {
 }
 
 
-async def send_search_voice_request(
+async def send_search_request(
     client: httpx.AsyncClient,
     url: str,
-    file_bytes: bytes,
+    file_bytes: bytes | None,
+    phonetic_text: str | None,
     error_ratio: float,
     idx: int,
 ):
-    """Send a single /search/voice request and return its latency in seconds."""
-    files = {"file": ("test.wav", file_bytes, "audio/wav")}
-    params = {"error_ratio": error_ratio}
-    start = time.perf_counter()
-    try:
-        resp = await client.post(f"{url}/search/voice", files=files, params=params)
-        resp.raise_for_status()
-        if idx == 0:
-            print("Sample search/voice response:", resp.json())
-    except Exception as e:
-        print(f"Request {idx} failed: {e}")
+    """Send a single /search request and return its latency in seconds."""
+    if file_bytes is not None:
+        files = {"file": ("test.wav", file_bytes, "audio/wav")}
+        params = {"error_ratio": error_ratio}
+        start = time.perf_counter()
+        try:
+            resp = await client.post(f"{url}/search", files=files, params=params)
+            resp.raise_for_status()
+            if idx == 0:
+                print("Sample search (file) response:", resp.json())
+        except Exception as e:
+            print(f"Request {idx} failed: {e}")
+            return None
+        end = time.perf_counter()
+        return end - start
+    elif phonetic_text is not None:
+        params = {"phonetic_text": phonetic_text, "error_ratio": error_ratio}
+        start = time.perf_counter()
+        try:
+            resp = await client.post(f"{url}/search", params=params)
+            resp.raise_for_status()
+            if idx == 0:
+                print("Sample search (text) response:", resp.json())
+        except Exception as e:
+            print(f"Request {idx} failed: {e}")
+            return None
+        end = time.perf_counter()
+        return end - start
+    else:
+        print("Request {idx} failed: No file or phonetic_text provided")
         return None
-    end = time.perf_counter()
-    return end - start
 
 
 async def send_correct_recitation_request(
@@ -97,57 +115,68 @@ async def load_test(
     error_ratio: float,
     endpoint: str,
     moshaf: dict,
+    phonetic_text: str | None,
 ):
-    try:
-        with open(file_path, "rb") as f:
-            file_bytes = f.read()
-    except FileNotFoundError:
-        print(f"Error: File {file_path} not found.")
-        return
+    file_bytes = None
+    if file_path:
+        try:
+            with open(file_path, "rb") as f:
+                file_bytes = f.read()
+        except FileNotFoundError:
+            print(f"Error: File {file_path} not found.")
+            return
 
     limits = httpx.Limits(
         max_keepalive_connections=concurrency, max_connections=concurrency
     )
 
-    async def run_search_voice():
+    async def run_search():
         async with httpx.AsyncClient(limits=limits, timeout=30.0) as client:
             semaphore = asyncio.Semaphore(concurrency)
 
             async def bounded_send(idx):
                 async with semaphore:
-                    return await send_search_voice_request(
-                        client, url, file_bytes, error_ratio, idx
+                    return await send_search_request(
+                        client, url, file_bytes, phonetic_text, error_ratio, idx
                     )
 
             tasks = [bounded_send(i) for i in range(total_requests)]
             return await asyncio.gather(*tasks)
 
     async def run_correct_recitation():
+        if file_bytes is None:
+            print("Error: file is required for correct-recitation endpoint")
+            return [None] * total_requests
+        fb: bytes = file_bytes
         async with httpx.AsyncClient(limits=limits, timeout=30.0) as client:
             semaphore = asyncio.Semaphore(concurrency)
 
             async def bounded_send(idx):
                 async with semaphore:
                     return await send_correct_recitation_request(
-                        client, url, file_bytes, error_ratio, moshaf, idx
+                        client, url, fb, error_ratio, moshaf, idx
                     )
 
             tasks = [bounded_send(i) for i in range(total_requests)]
             return await asyncio.gather(*tasks)
 
     async def run_transcript():
+        if file_bytes is None:
+            print("Error: file is required for transcript endpoint")
+            return [None] * total_requests
+        fb: bytes = file_bytes
         async with httpx.AsyncClient(limits=limits, timeout=30.0) as client:
             semaphore = asyncio.Semaphore(concurrency)
 
             async def bounded_send(idx):
                 async with semaphore:
-                    return await send_transcript_request(client, url, file_bytes, idx)
+                    return await send_transcript_request(client, url, fb, idx)
 
             tasks = [bounded_send(i) for i in range(total_requests)]
             return await asyncio.gather(*tasks)
 
     async def run_all():
-        search_task = asyncio.create_task(run_search_voice())
+        search_task = asyncio.create_task(run_search())
         correct_task = asyncio.create_task(run_correct_recitation())
         transcript_task = asyncio.create_task(run_transcript())
         (
@@ -156,7 +185,7 @@ async def load_test(
             transcript_latencies,
         ) = await asyncio.gather(search_task, correct_task, transcript_task)
         return {
-            "search-voice": search_latencies,
+            "search": search_latencies,
             "correct-recitation": correct_latencies,
             "transcript": transcript_latencies,
         }
@@ -168,9 +197,9 @@ async def load_test(
 
     if endpoint == "all":
         results = await run_all()
-    elif endpoint == "search-voice":
-        latencies = await run_search_voice()
-        results = {"search-voice": latencies}
+    elif endpoint == "search":
+        latencies = await run_search()
+        results = {"search": latencies}
     elif endpoint == "correct-recitation":
         latencies = await run_correct_recitation()
         results = {"correct-recitation": latencies}
@@ -248,9 +277,16 @@ if __name__ == "__main__":
     parser.add_argument(
         "--endpoint",
         "-E",
-        choices=["search-voice", "correct-recitation", "transcript", "all"],
+        choices=["search", "correct-recitation", "transcript", "all"],
         default="all",
         help="API endpoint to test",
+    )
+    parser.add_argument(
+        "--phonetic-text",
+        "-t",
+        type=str,
+        default=None,
+        help="Phonetic text for search endpoint (instead of file)",
     )
     args = parser.parse_args()
 
@@ -263,5 +299,6 @@ if __name__ == "__main__":
             args.error_ratio,
             args.endpoint,
             DEFAULT_MOSHAF,
+            args.phonetic_text,
         )
     )
