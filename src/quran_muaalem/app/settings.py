@@ -25,8 +25,13 @@ class AppSettings(BaseSettings):
         ge=0.0,
         le=1.0,
     )
-    max_workers: int = Field(
+    max_workers_phonetic_search: int = Field(
         default=max(1, (os.cpu_count() or 4) // 2),
         description="Number of worker threads for phonetic search executor.",
+        ge=1,
+    )
+    max_workers_phonetization: int = Field(
+        default=max(1, (os.cpu_count() or 4) // 2),
+        description="Number of worker threads for phonetization and error explanation executor.",
         ge=1,
     )

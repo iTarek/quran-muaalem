@@ -3,30 +3,50 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import Optional
 
 import httpx
-from fastapi import FastAPI, UploadFile, File, Query
+from fastapi import FastAPI, UploadFile, File, Query, Body
 
+from quran_transcript import quran_phonetizer, explain_error
+from quran_transcript.phonetics.moshaf_attributes import MoshafAttributes
 from quran_transcript.phonetics.search import (
     PhoneticSearch,
     NoPhonemesSearchResult,
 )
 
 from .settings import AppSettings
-from .types import SearchResponse, SearchResultResponse
+from .types import (
+    SearchResponse,
+    SearchResultResponse,
+    CorrectRecitationResponse,
+    CorrectRecitationRequest,
+    ReciterErrorResponse,
+)
 
 
 app_settings = AppSettings()
 
 app = FastAPI(title="Quran Muaalem Search API")
 
-_executor: Optional[ThreadPoolExecutor] = None
+_search_executor: Optional[ThreadPoolExecutor] = None
 _phonetic_search: Optional[PhoneticSearch] = None
+_phonetization_executor: Optional[ThreadPoolExecutor] = None
 
 
-def get_executor() -> ThreadPoolExecutor:
-    global _executor
-    if _executor is None:
-        _executor = ThreadPoolExecutor(max_workers=app_settings.max_workers)
-    return _executor
+def get_search_executor() -> ThreadPoolExecutor:
+    global _search_executor
+    if _search_executor is None:
+        _search_executor = ThreadPoolExecutor(
+            max_workers=app_settings.max_workers_phonetic_search
+        )
+    return _search_executor
+
+
+def get_phonetization_executor() -> ThreadPoolExecutor:
+    global _phonetization_executor
+    if _phonetization_executor is None:
+        _phonetization_executor = ThreadPoolExecutor(
+            max_workers=app_settings.max_workers_phonetization
+        )
+    return _phonetization_executor
 
 
 def get_phonetic_search() -> PhoneticSearch:
@@ -73,6 +93,38 @@ def run_phonetic_search(
     return response_results, None
 
 
+def run_phonetization_and_error(
+    uthmani_text: str,
+    moshaf: MoshafAttributes,
+    predicted_phonemes: str,
+) -> tuple[str, list[ReciterErrorResponse]]:
+    ref_phonetization = quran_phonetizer(uthmani_text, moshaf, remove_spaces=True)
+
+    errors = explain_error(
+        uthmani_text=uthmani_text,
+        ref_ph_text=ref_phonetization.phonemes,
+        predicted_ph_text=predicted_phonemes,
+        mappings=ref_phonetization.mappings,
+    )
+
+    error_responses = []
+    for err in errors:
+        error_responses.append(
+            ReciterErrorResponse(
+                uthmani_pos=err.uthmani_pos,
+                ph_pos=err.ph_pos,
+                error_type=err.error_type,
+                speech_error_type=err.speech_error_type,
+                expected_ph=err.expected_ph,
+                preditected_ph=err.preditected_ph,
+                expected_len=err.expected_len,
+                predicted_len=err.predicted_len,
+            )
+        )
+
+    return ref_phonetization.phonemes, error_responses
+
+
 @app.post("/search/voice", response_model=SearchResponse)
 async def search_voice(
     file: UploadFile = File(...),
@@ -85,10 +137,57 @@ async def search_voice(
 
     loop = asyncio.get_event_loop()
     results, message = await loop.run_in_executor(
-        get_executor(),
+        get_search_executor(),
         run_phonetic_search,
         phonemes,
         error_ratio,
     )
 
     return SearchResponse(phonemes=phonemes, results=results, message=message)
+
+
+@app.post("/correct-recitation", response_model=CorrectRecitationResponse)
+async def correct_recitation(
+    file: UploadFile = File(...),
+    request: CorrectRecitationRequest = Body(...),
+):
+    moshaf = request.moshaf
+    error_ratio = request.error_ratio
+
+    predicted_phonemes = await call_engine_predict(file)
+
+    loop = asyncio.get_event_loop()
+
+    search_results, message = await loop.run_in_executor(
+        get_search_executor(),
+        run_phonetic_search,
+        predicted_phonemes,
+        error_ratio,
+    )
+
+    if not search_results:
+        raise ValueError(message or "No results found. Try increasing error_ratio.")
+
+    best_result = search_results[0]
+
+    reference_phonemes, errors = await loop.run_in_executor(
+        get_phonetization_executor(),
+        run_phonetization_and_error,
+        best_result.uthmani_text,
+        moshaf,
+        predicted_phonemes,
+    )
+
+    return CorrectRecitationResponse(
+        sura_idx=best_result.sura_idx,
+        aya_idx=best_result.aya_idx,
+        uthmani_word_idx=best_result.uthmani_word_idx,
+        uthmani_char_idx_start=best_result.uthmani_char_idx_start,
+        uthmani_char_idx_end=best_result.uthmani_char_idx_end,
+        phonemes_idx_start=best_result.phonemes_idx_start,
+        phonemes_idx_end=best_result.phonemes_idx_end,
+        predicted_phonemes=predicted_phonemes,
+        reference_phonemes=reference_phonemes,
+        uthmani_text=best_result.uthmani_text,
+        errors=errors,
+    )
