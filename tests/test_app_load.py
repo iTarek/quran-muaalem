@@ -4,29 +4,61 @@ import argparse
 
 import httpx
 
-DEFAULT_URL = "http://localhost:8001/search/voice"
+DEFAULT_URL = "http://localhost:8001"
 DEFAULT_FILE = "assets/002282_15.wav"
 DEFAULT_REQUESTS = 100
 DEFAULT_CONCURRENCY = 100
 DEFAULT_ERROR_RATIO = 0.1
 
+DEFAULT_MOSHAF = {
+    "rewaya": "hafs",
+    "madd_monfasel_len": 4,
+    "madd_mottasel_len": 4,
+    "madd_mottasel_waqf": 4,
+    "madd_aared_len": 4,
+}
 
-async def send_request(
+
+async def send_search_voice_request(
     client: httpx.AsyncClient,
     url: str,
     file_bytes: bytes,
     error_ratio: float,
     idx: int,
 ):
-    """Send a single request and return its latency in seconds."""
+    """Send a single /search/voice request and return its latency in seconds."""
     files = {"file": ("test.wav", file_bytes, "audio/wav")}
     params = {"error_ratio": error_ratio}
     start = time.perf_counter()
     try:
-        resp = await client.post(url, files=files, params=params)
+        resp = await client.post(f"{url}/search/voice", files=files, params=params)
         resp.raise_for_status()
         if idx == 0:
-            print("Sample response:", resp.json())
+            print("Sample search/voice response:", resp.json())
+    except Exception as e:
+        print(f"Request {idx} failed: {e}")
+        return None
+    end = time.perf_counter()
+    return end - start
+
+
+async def send_correct_recitation_request(
+    client: httpx.AsyncClient,
+    url: str,
+    file_bytes: bytes,
+    error_ratio: float,
+    moshaf: dict,
+    idx: int,
+):
+    """Send a single /correct-recitation request and return its latency in seconds."""
+    files = {"file": ("test.wav", file_bytes, "audio/wav")}
+    data = {"moshaf": moshaf, "error_ratio": error_ratio}
+    start = time.perf_counter()
+    try:
+        resp = await client.post(f"{url}/correct-recitation", files=files, data=data)
+        resp.raise_for_status()
+        if idx == 0:
+            print("Sample correct-recitation response:", resp.json())
     except Exception as e:
         print(f"Request {idx} failed: {e}")
         return None
@@ -40,6 +72,8 @@ async def load_test(
     total_requests: int,
     concurrency: int,
     error_ratio: float,
+    endpoint: str,
+    moshaf: dict,
 ):
     try:
         with open(file_path, "rb") as f:
@@ -51,51 +85,101 @@ async def load_test(
     limits = httpx.Limits(
         max_keepalive_connections=concurrency, max_connections=concurrency
     )
-    async with httpx.AsyncClient(limits=limits, timeout=30.0) as client:
-        semaphore = asyncio.Semaphore(concurrency)
 
-        async def bounded_send(idx):
-            async with semaphore:
-                return await send_request(client, url, file_bytes, error_ratio, idx)
+    async def run_search_voice():
+        async with httpx.AsyncClient(limits=limits, timeout=30.0) as client:
+            semaphore = asyncio.Semaphore(concurrency)
 
-        tasks = [bounded_send(i) for i in range(total_requests)]
+            async def bounded_send(idx):
+                async with semaphore:
+                    return await send_search_voice_request(
+                        client, url, file_bytes, error_ratio, idx
+                    )
 
-        print(
-            f"Starting load test: {total_requests} requests, concurrency {concurrency}"
+            tasks = [bounded_send(i) for i in range(total_requests)]
+            return await asyncio.gather(*tasks)
+
+    async def run_correct_recitation():
+        async with httpx.AsyncClient(limits=limits, timeout=30.0) as client:
+            semaphore = asyncio.Semaphore(concurrency)
+
+            async def bounded_send(idx):
+                async with semaphore:
+                    return await send_correct_recitation_request(
+                        client, url, file_bytes, error_ratio, moshaf, idx
+                    )
+
+            tasks = [bounded_send(i) for i in range(total_requests)]
+            return await asyncio.gather(*tasks)
+
+    async def run_all():
+        search_task = asyncio.create_task(run_search_voice())
+        correct_task = asyncio.create_task(run_correct_recitation())
+        search_latencies, correct_latencies = await asyncio.gather(
+            search_task, correct_task
         )
-        start_time = time.perf_counter()
-        latencies = await asyncio.gather(*tasks)
-        end_time = time.perf_counter()
+        return {
+            "search-voice": search_latencies,
+            "correct-recitation": correct_latencies,
+        }
 
-    successful_latencies = [lat for lat in latencies if lat is not None]
-    success_count = len(successful_latencies)
-    failed_count = total_requests - success_count
+    print(
+        f"Starting load test: {total_requests} requests, concurrency {concurrency}, endpoint: {endpoint}"
+    )
+    start_time = time.perf_counter()
 
-    if success_count == 0:
-        print("No successful requests. Exiting.")
-        return
+    if endpoint == "all":
+        results = await run_all()
+    elif endpoint == "search-voice":
+        latencies = await run_search_voice()
+        results = {"search-voice": latencies}
+    else:
+        latencies = await run_correct_recitation()
+        results = {"correct-recitation": latencies}
 
-    min_lat = min(successful_latencies)
-    max_lat = max(successful_latencies)
-    avg_lat = sum(successful_latencies) / success_count
+    end_time = time.perf_counter()
+
+    total_success = 0
+    total_failed = 0
+
+    for ep_name, latencies in results.items():
+        successful_latencies = [lat for lat in latencies if lat is not None]
+        success_count = len(successful_latencies)
+        failed_count = total_requests - success_count
+
+        total_success += success_count
+        total_failed += failed_count
+
+        if success_count == 0:
+            print(f"\n{ep_name}: No successful requests.")
+            continue
+
+        min_lat = min(successful_latencies)
+        max_lat = max(successful_latencies)
+        avg_lat = sum(successful_latencies) / success_count
+
+        print(f"\n--- {ep_name} Results ---")
+        print(f"Successful requests: {success_count}")
+        print(f"Failed requests: {failed_count}")
+        print(
+            f"Latency (seconds) - min: {min_lat:.4f}, max: {max_lat:.4f}, avg: {avg_lat:.4f}"
+        )
+
     total_time = end_time - start_time
-    throughput = success_count / total_time
+    throughput = total_success / total_time if total_time > 0 else 0
 
-    print("\n--- Load Test Results ---")
-    print(f"Successful requests: {success_count}")
-    print(f"Failed requests: {failed_count}")
+    print(f"\n--- Combined Results ---")
+    print(f"Total successful: {total_success}")
+    print(f"Total failed: {total_failed}")
     print(f"Total time: {total_time:.2f} s")
     print(f"Throughput: {throughput:.2f} req/s")
-    print(
-        f"Latency (seconds) - min: {min_lat:.4f}, max: {max_lat:.4f}, avg: {avg_lat:.4f}"
-    )
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Load test for QuranMuaalem Search API"
     )
-    parser.add_argument("--url", type=str, default=DEFAULT_URL, help="API endpoint URL")
+    parser.add_argument("--url", type=str, default=DEFAULT_URL, help="API base URL")
     parser.add_argument(
         "--file", type=str, default=DEFAULT_FILE, help="Path to audio file"
     )
@@ -120,10 +204,23 @@ if __name__ == "__main__":
         default=DEFAULT_ERROR_RATIO,
         help="Error ratio for phonetic search",
     )
+    parser.add_argument(
+        "--endpoint",
+        "-E",
+        choices=["search-voice", "correct-recitation", "all"],
+        default="all",
+        help="API endpoint to test",
+    )
     args = parser.parse_args()
 
     asyncio.run(
         load_test(
-            args.url, args.file, args.requests, args.concurrency, args.error_ratio
+            args.url,
+            args.file,
+            args.requests,
+            args.concurrency,
+            args.error_ratio,
+            args.endpoint,
+            DEFAULT_MOSHAF,
         )
     )

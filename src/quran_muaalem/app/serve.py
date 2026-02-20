@@ -20,6 +20,8 @@ from .types import (
     CorrectRecitationRequest,
     ReciterErrorResponse,
     PhonemesSearchSpanApp,
+    TajweedRuleApp,
+    TajweedRuleNameApp,
 )
 
 
@@ -55,6 +57,15 @@ def get_phonetic_search() -> PhoneticSearch:
     if _phonetic_search is None:
         _phonetic_search = PhoneticSearch()
     return _phonetic_search
+
+
+def tajweed_rule_to_app(rule) -> TajweedRuleApp:
+    return TajweedRuleApp(
+        name=TajweedRuleNameApp(ar=rule.name.ar, en=rule.name.en),
+        golden_len=rule.golden_len,
+        correctness_type=rule.correctness_type,
+        tag=rule.tag,
+    )
 
 
 async def call_engine_predict(audio_file: UploadFile) -> str:
@@ -127,6 +138,26 @@ def run_phonetization_and_error(
                 preditected_ph=err.preditected_ph,
                 expected_len=err.expected_len,
                 predicted_len=err.predicted_len,
+                ref_tajweed_rules=[
+                    tajweed_rule_to_app(r) for r in err.ref_tajweed_rules
+                ]
+                if err.ref_tajweed_rules
+                else None,
+                inserted_tajweed_rules=[
+                    tajweed_rule_to_app(r) for r in err.inserted_tajweed_rules
+                ]
+                if err.inserted_tajweed_rules
+                else None,
+                replaced_tajweed_rules=[
+                    tajweed_rule_to_app(r) for r in err.replaced_tajweed_rules
+                ]
+                if err.replaced_tajweed_rules
+                else None,
+                missing_tajweed_rules=[
+                    tajweed_rule_to_app(r) for r in err.missing_tajweed_rules
+                ]
+                if err.missing_tajweed_rules
+                else None,
             )
         )
 

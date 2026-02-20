@@ -25,6 +25,24 @@ class PhonemesSearchSpanApp(BaseModel):
     phonemes_idx: int = Field(description="0-based index in the phoneme sequence")
 
 
+class TajweedRuleNameApp(BaseModel):
+    """Localized name for Tajweed rules (extensible for more languages in future)."""
+
+    ar: str = Field(description="Arabic name")
+    en: str = Field(description="English name")
+
+
+class TajweedRuleApp(BaseModel):
+    """Represents a Tajweed rule (single model for all rule types)."""
+
+    name: TajweedRuleNameApp = Field(description="Localized name of the Tajweed rule")
+    golden_len: int = Field(description="Expected length for count-based rules")
+    correctness_type: Literal["match", "count"] = Field(
+        description="Type of correctness check"
+    )
+    tag: Optional[str] = Field(default=None, description="Rule-specific tag")
+
+
 class SearchResultResponse(BaseModel):
     """Result of a phonetic search match."""
 
@@ -65,6 +83,18 @@ class ReciterErrorResponse(BaseModel):
     )
     predicted_len: Optional[int] = Field(
         default=None, description="Predicted length (for madd errors)"
+    )
+    ref_tajweed_rules: Optional[list[TajweedRuleApp]] = Field(
+        default=None, description="Reference Tajweed rules"
+    )
+    inserted_tajweed_rules: Optional[list[TajweedRuleApp]] = Field(
+        default=None, description="Inserted Tajweed rules"
+    )
+    replaced_tajweed_rules: Optional[list[TajweedRuleApp]] = Field(
+        default=None, description="Replaced Tajweed rules"
+    )
+    missing_tajweed_rules: Optional[list[TajweedRuleApp]] = Field(
+        default=None, description="Missing Tajweed rules"
     )
 
 
