@@ -132,7 +132,6 @@ def run_phonetization_and_error(
     moshaf: MoshafAttributes,
     predicted_phonemes: str,
 ) -> tuple[str, list[ReciterErrorResponse]]:
-    print(moshaf.madd_aared_len)
     ref_phonetization = quran_phonetizer(uthmani_text, moshaf, remove_spaces=True)
 
     errors = explain_error(

@@ -11,7 +11,6 @@ DEFAULT_CONCURRENCY = 100
 DEFAULT_ERROR_RATIO = 0.1
 
 DEFAULT_MOSHAF = {
-    "rewaya": "hafs",
     "madd_monfasel_len": 4,
     "madd_mottasel_len": 4,
     "madd_mottasel_waqf": 4,
@@ -70,17 +69,18 @@ async def send_correct_recitation_request(
 ):
     """Send a single /correct-recitation request and return its latency in seconds."""
     files = {"file": ("test.wav", file_bytes, "audio/wav")}
-    json_data = {"moshaf": moshaf, "error_ratio": error_ratio}
+    form_data = moshaf | {"error_ratio": error_ratio}
     start = time.perf_counter()
     try:
         resp = await client.post(
-            f"{url}/correct-recitation", files=files, json=json_data
+            f"{url}/correct-recitation", files=files, data=form_data
         )
         resp.raise_for_status()
         if idx == 0:
             print("Sample correct-recitation response:", resp.json())
     except Exception as e:
         print(f"Request {idx} failed: {e}")
+        print(e)
         return None
     end = time.perf_counter()
     return end - start

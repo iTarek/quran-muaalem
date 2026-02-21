@@ -186,7 +186,9 @@ def correct_recitation_form_dependency(default_moshaf=DEFAULT_MOSHAF):
             str_enum = [str(v) for v in int_values]
 
             # Use Form with enum, and set annotation to str so FastAPI shows string enum
-            form_param = Form(default, description=field.description, enum=str_enum)
+            form_param = Form(
+                str(default), description=field.description, enum=str_enum
+            )
             param_annotation = str
         else:
             # For non‑Literal fields, use the original annotation and plain Form
@@ -206,7 +208,7 @@ def correct_recitation_form_dependency(default_moshaf=DEFAULT_MOSHAF):
     def dependency(**kwargs):
 
         # Convert each moshaf field from string to the required type
-        converted = {}
+        converted = default_moshaf.model_dump()
         for name, raw_value in kwargs.items():
             field = MoshafAttributes.model_fields[name]
             converted[name] = convert_form_value(raw_value, field.annotation)
