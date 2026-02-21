@@ -1929,7 +1929,7 @@ requires-dist = [
     { name = "pydantic-settings", marker = "extra == 'engine'", specifier = ">=2.13.1" },
     { name = "pytest", marker = "extra == 'test'" },
     { name = "python-multipart", marker = "extra == 'engine'", specifier = ">=0.0.20" },
-    { name = "quran-transcript", specifier = ">=0.5.1" },
+    { name = "quran-transcript", specifier = ">=0.5.2" },
     { name = "rich", specifier = ">=14.1.0" },
     { name = "torch", specifier = ">=2.7.0" },
     { name = "transformers", specifier = ">=4.55.0" },
@@ -1939,7 +1939,7 @@ provides-extras = ["test", "ui", "engine"]
 
 [[package]]
 name = "quran-transcript"
-version = "0.5.1"
+version = "0.5.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "fuzzysearch" },
@@ -1949,9 +1949,9 @@ dependencies = [
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
     { name = "xmltodict" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9a/e3/5547d3ea3599c4036e927bcbf19cab935b2e00bd767935946d910ff3d725/quran_transcript-0.5.1.tar.gz", hash = "sha256:8347b018afffc8a4143642bd61f863e1953ba177c92a13b55ed8340cbf67bda4", size = 5752807, upload-time = "2026-02-17T11:52:08.068Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9d/02/91bae129727130f2f20d788d8edc45e39c700315dafa2381624a71bca352/quran_transcript-0.5.2.tar.gz", hash = "sha256:f52175dfc6d96664ad8ed6f383f39ebf572ef8ffde738cf4dcdd7c1800ac7a71", size = 5753367, upload-time = "2026-02-21T22:25:29.286Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4a/a1/6eb957c8c4fb3a0b7ba0e0092f3fa681709831faf8fe84ae0bdc8495506f/quran_transcript-0.5.1-py3-none-any.whl", hash = "sha256:114ed93cad3f90851dafa95f5653812a0593ab11ece668bca448a0cb059642a6", size = 5815112, upload-time = "2026-02-17T11:51:11.822Z" },
+    { url = "https://files.pythonhosted.org/packages/a9/df/e8aba690e5b3c62a2709cafc17b221d97d5846e151ec3253e971be5d3080/quran_transcript-0.5.2-py3-none-any.whl", hash = "sha256:950ff3584d15b05d355a1d95d81d1c4ef9b476a1100764750445169691adc842", size = 5815197, upload-time = "2026-02-21T22:24:52.526Z" },
 ]
 
 [[package]]

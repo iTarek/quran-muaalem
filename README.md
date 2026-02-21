@@ -321,6 +321,7 @@ class Muaalem:
                 prob (float): Confidence probability for this feature.
                 idx (int): Identifier for the feature class.
         """
+```
 
 
 ---
@@ -481,6 +482,187 @@ uv run quran-muaalem-app
 6. **LazemMaddRule (المد اللازم)**: المد اللازم في الحروف المعينة مثل الميم في {الم} والهمزة في {ءآل}
 7. **AaredMaddRule (المد العارض للسكون)**: المد الذي يظهر عند الوقف بسبب السكون
 8. **LeenMaddRule (مد اللين)**: مد اللين للواو الساكنة والياء الساكنة وقبلهما حرف مفتوح
+
+---
+
+## مثال: البحث في القرآن (Search Endpoint)
+
+البحث في القرآن باستخدام الصوت أو النص الصوتي.
+
+### الأمر (curl)
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8001/search?error_ratio=0.1' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'file=@WhatsApp Ptt 2026-02-20 at 1.56.35 PM.ogg;type=application/ogg'
+```
+
+### الاستجابة (JSON)
+
+```json
+{
+  "phonemes": "ءَلِفلَااممِۦۦم",
+  "results": [
+    {
+      "start": {
+        "sura_idx": 2,
+        "aya_idx": 1,
+        "uthmani_word_idx": 0,
+        "uthmani_char_idx": 0,
+        "phonemes_idx": 0
+      },
+      "end": {
+        "sura_idx": 2,
+        "aya_idx": 1,
+        "uthmani_word_idx": 0,
+        "uthmani_char_idx": 5,
+        "phonemes_idx": 25
+      },
+      "uthmani_text": "الٓمٓ"
+    },
+    {
+      "start": {
+        "sura_idx": 3,
+        "aya_idx": 1,
+        "uthmani_word_idx": 0,
+        "uthmani_char_idx": 0,
+        "phonemes_idx": 0
+      },
+      "end": {
+        "sura_idx": 3,
+        "aya_idx": 1,
+        "uthmani_word_idx": 0,
+        "uthmani_char_idx": 5,
+        "phonemes_idx": 25
+      },
+      "uthmani_text": "الٓمٓ"
+    },
+    {
+      "start": {
+        "sura_idx": 7,
+        "aya_idx": 1,
+        "uthmani_word_idx": 0,
+        "uthmani_char_idx": 0,
+        "phonemes_idx": 0
+      },
+      "end": {
+        "sura_idx": 7,
+        "aya_idx": 1,
+        "uthmani_word_idx": 0,
+        "uthmani_char_idx": 5,
+        "phonemes_idx": 25
+      },
+      "uthmani_text": "الٓمٓصٓ"
+    },
+    {
+      "start": {
+        "sura_idx": 13,
+        "aya_idx": 1,
+        "uthmani_word_idx": 0,
+        "uthmani_char_idx": 0,
+        "phonemes_idx": 0
+      },
+      "end": {
+        "sura_idx": 13,
+        "aya_idx": 1,
+        "uthmani_word_idx": 0,
+        "uthmani_char_idx": 5,
+        "phonemes_idx": 25
+      },
+      "uthmani_text": "الٓمٓر"
+    },
+    {
+      "start": {
+        "sura_idx": 29,
+        "aya_idx": 1,
+        "uthmani_word_idx": 0,
+        "uthmani_char_idx": 0,
+        "phonemes_idx": 0
+      },
+      "end": {
+        "sura_idx": 29,
+        "aya_idx": 1,
+        "uthmani_word_idx": 0,
+        "uthmani_char_idx": 5,
+        "phonemes_idx": 25
+      },
+      "uthmani_text": "الٓمٓ"
+    },
+    {
+      "start": {
+        "sura_idx": 30,
+        "aya_idx": 1,
+        "uthmani_word_idx": 0,
+        "uthmani_char_idx": 0,
+        "phonemes_idx": 0
+      },
+      "end": {
+        "sura_idx": 30,
+        "aya_idx": 1,
+        "uthmani_word_idx": 0,
+        "uthmani_char_idx": 5,
+        "phonemes_idx": 25
+      },
+      "uthmani_text": "الٓمٓ"
+    },
+    {
+      "start": {
+        "sura_idx": 31,
+        "aya_idx": 1,
+        "uthmani_word_idx": 0,
+        "uthmani_char_idx": 0,
+        "phonemes_idx": 0
+      },
+      "end": {
+        "sura_idx": 31,
+        "aya_idx": 1,
+        "uthmani_word_idx": 0,
+        "uthmani_char_idx": 5,
+        "phonemes_idx": 25
+      },
+      "uthmani_text": "الٓمٓ"
+    },
+    {
+      "start": {
+        "sura_idx": 32,
+        "aya_idx": 1,
+        "uthmani_word_idx": 0,
+        "uthmani_char_idx": 0,
+        "phonemes_idx": 0
+      },
+      "end": {
+        "sura_idx": 32,
+        "aya_idx": 1,
+        "uthmani_word_idx": 0,
+        "uthmani_char_idx": 5,
+        "phonemes_idx": 25
+      },
+      "uthmani_text": "الٓمٓ"
+    }
+  ],
+  "message": null
+}
+```
+
+### شرح الاستجابة
+
+- **phonemes**: الفونيمات المستخرجة من الصوت المدخل
+- **results**: قائمة النتائج المطابقة في القرآن الكريم، كل نتيجة تحتوي على:
+  - **start**: موقع بداية المطابقة (رقم السورة، رقم الآية، موقع الكلمة، موقع الحرف، موقع الفونيم)
+  - **end**: موقع نهاية المطابقة
+  - **uthmani_text**: النص العثماني المطابق
+- **message**: رسالة اختيارية (مثلاً إذا لم توجد نتائج)
+
+### البحث بالنص الصوتي مباشرة
+
+يمكنك أيضاً البحث مباشرة بالنص الصوتي بدون ملف صوتي:
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8001/search?phonetic_text=bismi&error_ratio=0.1'
+```
 
 ---
 
