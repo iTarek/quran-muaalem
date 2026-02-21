@@ -211,11 +211,19 @@ async def search(
 @app.post("/correct-recitation", response_model=CorrectRecitationResponse)
 async def correct_recitation(
     file: Annotated[UploadFile, File()],
+    phonetic_text: str = "",
     moshaf: MoshafAttributes = Depends(correct_recitation_form_dependency()),
     error_ratio: Annotated[float, Form(ge=0.0, le=1)] = app_settings.error_ratio,
 ):
 
-    predicted_phonemes = await call_engine_predict(file)
+    if file:
+        predicted_phonemes = await call_engine_predict(file)
+    elif phonetic_text:
+        predicted_phonemes = phonetic_text
+    else:
+        raise HTTPException(
+            status_code=422, detail="Either 'file' or 'phonetic_text' must be provided"
+        )
 
     loop = asyncio.get_event_loop()
 
