@@ -86,7 +86,7 @@ def tajweed_rule_to_app(rule) -> TajweedRuleApp:
 async def call_engine_predict(audio_file: UploadFile) -> str:
     audio_bytes = await audio_file.read()
     async with httpx.AsyncClient(timeout=30.0) as client:
-        files = {"file": ("audio.wav", audio_bytes, "audio/wav")}
+        files = {"request": ("audio.wav", audio_bytes, "audio/wav")}
         response = await client.post(app_settings.engine_url, files=files)
         response.raise_for_status()
         data = response.json()
