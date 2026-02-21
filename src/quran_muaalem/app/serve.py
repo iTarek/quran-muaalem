@@ -325,7 +325,7 @@ async def search(
         description="Direct phonetic text input (alternative to audio file)",
     ),
     error_ratio: float = Query(
-        default=None,
+        default=app_settings.error_ratio,
         description="Maximum allowed error ratio (0.0-1.0), defaults to app setting",
     ),
 ):
