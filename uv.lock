@@ -1898,6 +1898,7 @@ engine = [
     { name = "httpx" },
     { name = "litserve" },
     { name = "pydantic-settings" },
+    { name = "python-multipart" },
     { name = "uvicorn" },
 ]
 test = [
@@ -1927,6 +1928,7 @@ requires-dist = [
     { name = "numpy", specifier = ">=2.2.6" },
     { name = "pydantic-settings", marker = "extra == 'engine'", specifier = ">=2.13.1" },
     { name = "pytest", marker = "extra == 'test'" },
+    { name = "python-multipart", marker = "extra == 'engine'", specifier = ">=0.0.20" },
     { name = "quran-transcript", specifier = ">=0.5.1" },
     { name = "rich", specifier = ">=14.1.0" },
     { name = "torch", specifier = ">=2.7.0" },

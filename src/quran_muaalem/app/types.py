@@ -1,6 +1,15 @@
-from typing import Optional, Literal
+from typing import (
+    Optional,
+    get_origin,
+    get_args,
+    Union,
+    Literal,
+)
 
+
+from fastapi import Form
 from pydantic import BaseModel, Field
+from inspect import Parameter, Signature
 
 from quran_transcript import SifaOutput
 from quran_transcript.phonetics.moshaf_attributes import MoshafAttributes
@@ -126,11 +135,84 @@ class CorrectRecitationResponse(BaseModel):
     )
 
 
-class CorrectRecitationRequest(BaseModel):
-    """Request body for correct-recitation endpoint."""
+def convert_form_value(value: str, field_type):
+    """
+    Convert a raw form string to the type expected by the model.
+    Handles Literal fields (e.g., Literal[2,4,6] -> int) and Optional.
+    """
+    # Handle Optional (Union[..., None])
+    if get_origin(field_type) is Union:
+        args = get_args(field_type)
+        if type(None) in args and len(args) == 2:
+            # Extract the non‑None type
+            non_none = next(arg for arg in args if arg is not type(None))
+            field_type = non_none
 
-    moshaf: MoshafAttributes = Field(description="Moshaf attributes for phonetization")
-    error_ratio: float = Field(
-        default=0.1,
-        description="Maximum allowed Levenshtein distance as a fraction of query length.",
-    )
+    # If Literal, get the type of its values (all should be the same)
+    if get_origin(field_type) is Literal:
+        args = get_args(field_type)
+        if args:
+            target_type = type(args[0])
+        else:
+            target_type = str  # fallback (should not happen)
+    else:
+        target_type = field_type
+
+    # Convert based on target type
+    if target_type is int:
+        return int(value)
+    elif target_type is float:
+        return float(value)
+    # For strings, return as‑is
+    return value
+
+
+def correct_recitation_form_dependency():
+    """
+    Generates a dependency that extracts each field of MoshafAttributes
+    plus error_ratio from multipart/form‑data fields, converts the strings
+    to the correct Python types, and builds a CorrectRecitationRequest.
+    """
+    parameters = []
+
+    for name, field in MoshafAttributes.model_fields.items():
+        default = ... if field.is_required() else field.default
+
+        # Handle Literal[int] fields specially: create a string enum for OpenAPI
+        if get_origin(field.annotation) is Literal:
+            # Get the allowed integer values and convert them to strings
+            int_values = get_args(field.annotation)
+            str_enum = [str(v) for v in int_values]
+
+            # Use Form with enum, and set annotation to str so FastAPI shows string enum
+            form_param = Form(default, description=field.description, enum=str_enum)
+            param_annotation = str
+        else:
+            # For non‑Literal fields, use the original annotation and plain Form
+            form_param = Form(default, description=field.description)
+            param_annotation = field.annotation
+
+        param = Parameter(
+            name=name,
+            kind=Parameter.KEYWORD_ONLY,
+            default=form_param,
+            annotation=param_annotation,
+        )
+        parameters.append(param)
+
+    sig = Signature(parameters)
+
+    def dependency(**kwargs):
+
+        # Convert each moshaf field from string to the required type
+        converted = {}
+        for name, raw_value in kwargs.items():
+            field = MoshafAttributes.model_fields[name]
+            converted[name] = convert_form_value(raw_value, field.annotation)
+
+        moshaf = MoshafAttributes(**converted)
+        return moshaf
+
+    dependency.__signature__ = sig
+    dependency.__name__ = "correct_recitation_form_dependency"
+    return dependency

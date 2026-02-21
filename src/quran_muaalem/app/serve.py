@@ -1,10 +1,15 @@
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
-from typing import Optional
+from typing import (
+    Optional,
+    Annotated,
+)
 
 import httpx
-from fastapi import FastAPI, UploadFile, File, Query, Body, Form
+from fastapi import FastAPI, UploadFile, File, Query, Body, Form, Depends
 from fastapi.exceptions import HTTPException
+from pydantic import Json
+
 
 from quran_transcript import quran_phonetizer, explain_error
 from quran_transcript.phonetics.moshaf_attributes import MoshafAttributes
@@ -18,12 +23,12 @@ from .types import (
     SearchResponse,
     SearchResultResponse,
     CorrectRecitationResponse,
-    CorrectRecitationRequest,
     ReciterErrorResponse,
     PhonemesSearchSpanApp,
     TajweedRuleApp,
     TajweedRuleNameApp,
     TranscriptResponse,
+    correct_recitation_form_dependency,
 )
 
 # TODO:
@@ -35,6 +40,7 @@ from .types import (
 
 
 app_settings = AppSettings()
+
 
 app = FastAPI(title="Quran Muaalem Search API")
 
@@ -205,12 +211,10 @@ async def search(
 
 @app.post("/correct-recitation", response_model=CorrectRecitationResponse)
 async def correct_recitation(
-    file: UploadFile = File(...),
-    request: CorrectRecitationRequest = Query(...),
+    file: Annotated[UploadFile, File()],
+    moshaf: MoshafAttributes = Depends(correct_recitation_form_dependency()),
+    error_ratio: Annotated[float, Form(ge=0.0, le=1)] = app_settings.error_ratio,
 ):
-    print(request.moshaf.madd_aared_len)
-    moshaf = request.moshaf
-    error_ratio = request.error_ratio
 
     predicted_phonemes = await call_engine_predict(file)
 
