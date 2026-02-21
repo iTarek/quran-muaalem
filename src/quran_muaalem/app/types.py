@@ -167,7 +167,7 @@ def convert_form_value(value: str, field_type):
     return value
 
 
-def correct_recitation_form_dependency():
+def correct_recitation_form_dependency(default_moshaf=DEFAULT_MOSHAF):
     """
     Generates a dependency that extracts each field of MoshafAttributes
     plus error_ratio from multipart/form‑data fields, converts the strings
@@ -175,8 +175,9 @@ def correct_recitation_form_dependency():
     """
     parameters = []
 
+    default_moshaf_fields = default_moshaf.model_dump()
     for name, field in MoshafAttributes.model_fields.items():
-        default = ... if field.is_required() else field.default
+        default = default_moshaf_fields[name]
 
         # Handle Literal[int] fields specially: create a string enum for OpenAPI
         if get_origin(field.annotation) is Literal:
