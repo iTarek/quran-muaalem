@@ -321,4 +321,297 @@ class Muaalem:
                 prob (float): Confidence probability for this feature.
                 idx (int): Identifier for the feature class.
         """
+
+
+---
+
+## خوادم API
+
+يحتوي المشروع على خويمين رئيسيين:
+
+1. **المحرك (Engine)**: يشغّل نموذج Wav2Vec2-BERT لتحويل الصوت إلى فونيمات
+2. **التطبيق (App)**: يوفر واجهات البحث والتصحيح والنسخ
+
+### التثبيت
+
+```bash
+uv add quran-muaalem[engine]
+```
+
+### تشغيل الخوادم
+
+```bash
+# الطرفية الأولى: تشغيل المحرك (منفذ 8000)
+uv run quran-muaalem-engine
+
+# الطرفية الثانية: تشغيل التطبيق (منفذ 8001)
+uv run quran-muaalem-app
+```
+
+---
+
+## إعدادات المحرك (EngineSettings)
+
+الإعدادات موجودة في `src/quran_muaalem/engine/settings.py`:
+
+| الإعداد | النوع | القيمة الافتراضية | الوصف |
+|---------|-------|-------------------|-------|
+| `model_name_or_path` | string | `obadx/muaalem-model-v3_2` | مسار نموذج HuggingFace |
+| `dtype` | string | `bfloat16` | نوع البيانات: `float32`, `float16`, `bfloat16` |
+| `max_audio_seconds` | float | `15` | الحد الأقصى لطول الصوت بالثواني |
+| `max_batch_size` | int | `128` | حجم الدفعة القصوى للمعالجة |
+| `batch_timeout` | float | `0.4` | مهلة الانتظار للدفعة بالثواني |
+| `host` | string | `0.0.0.0` | عنوان ربط الخادم |
+| `port` | int | `8000` | منفذ الخادم |
+| `accelerator` | string | `cuda` | معالج الأجهزة: `cuda`, `cpu`, `mps` |
+| `devices` | int | `1` | عدد الأجهزة |
+| `workers_per_device` | int | `1` | عدد العمال لكل جهاز |
+| `timeout` | float | `90.0` | مهلة الطلب بالثواني |
+
+---
+
+## إعدادات التطبيق (AppSettings)
+
+الإعدادات موجودة في `src/quran_muaalem/app/settings.py`:
+
+| الإعداد | القيمة الافتراضية | الوصف |
+|---------|-------------------|-------|
+| `engine_url` | `http://0.0.0.0:8000/predict` | رابط نقطة `/predict` في المحرك |
+| `host` | `0.0.0.0` | عنوان ربط الخادم |
+| `port` | `8001` | منفذ الخادم |
+| `error_ratio` | `0.1` | نسبة الخطأ المسموحة للبحث (0.0-1.0) |
+| `max_workers_phonetic_search` | `cpu_count // 2` | عدد عمليات البحث الصوتية المتزامنة |
+| `max_workers_phonetization` | `cpu_count // 2` | عدد عمليات الفونتة المتزامنة |
+
+---
+
+## نقاط النهاية
+
+### المحرك (Engine) - المنفذ 8000
+
+| النقطة | الوصف |
+|--------|-------|
+| `/predict` | تحويل الصوت إلى فونيمات |
+| `/health` | فحص حالة الخادم |
+| `/docs` | وثائق OpenAPI التفاعلية |
+| `/redoc` | وثائق ReDoc البديلة |
+
+### التطبيق (App) - المنفذ 8001
+
+| النقطة | الوصف |
+|--------|-------|
+| `/health` | فحص حالة التطبيق والاتصال بالمحرك |
+| `/search` | البحث في القرآن بالصوت أو النص الصوتي |
+| `/correct-recitation` | تحليل التلاوة واكتشاف أخطاء التجويد |
+| `/transcript` | نسخ الصوت إلى نص صوتي (وكيل للمحرك) |
+| `/docs` | وثائق OpenAPI التفاعلية |
+| `/redoc` | وثائق ReDoc البديلة |
+
+---
+
+## خصائص المصحف (MoshafAttributes)
+
+هذه الخصائص تُعرّف قواعد التلاوة لقراءة حفص. جميع الحقول اختيارية:
+
+| الخاصية | العربية | القيم | القيمة الافتراضية | الوصف |
+|---------|---------|-------|-------------------|-------|
+| `rewaya` | الرواية | `hafs` (حفص) | `hafs` | نوع قراءة القرآن |
+| `recitation_speed` | سرعة التلاوة | `mujawad` (مجود), `above_murattal` (فويق المرتل), `murattal` (مرتل), `hadr` (حدر) | `murattal` | سرعة التلاوة مرتبة من الأبطأ إلى الأسرع |
+| `takbeer` | التكبير | `no_takbeer` (لا تكبير), `beginning_of_sharh` (التكبير من أول الشرح لأول الناس), `end_of_doha` (التكبير من آخر الضحى لآخر الناس), `general_takbeer` (التكبير أول كل سورة إلا التوبة) | `no_takbeer` | طرق إضافة التكبير (الله أكبر) بعد الاستعاذة (استعاذة) وبين نهاية السورة وبداية السورة |
+| `madd_monfasel_len` | مد المنفصل | `2`, `3`, `4`, `5` | `4` | مقدار مد المنفصل (مد النفصل) لقراءة حفص |
+| `madd_mottasel_len` | مقدار المد المتصل | `4`, `5`, `6` | `4` | مقدار المد المتصل لقراءة حفص |
+| `madd_mottasel_waqf` | مقدار المد المتصل وقفا | `4`, `5`, `6` | `4` | مقدار المد المتصل عند الوقف لقراءة حفص |
+| `madd_aared_len` | مقدار مد العارض | `2`, `4`, `6` | `4` | مقدار مد العارض للسكون |
+| `madd_alleen_len` | مقدار مد اللين | `2`, `4`, `6` | `None` | مقدار مد اللين عند الوقف (يختصر إلى madd_aared_len) |
+| `ghonna_lam_and_raa` | غنة اللام و الراء | `ghonna` (غنة), `no_ghonna` (لا غنة) | `no_ghonna` | الغنة في إدغام النون مع اللام والراء لقراءة حفص |
+| `meem_aal_imran` | ميم آل عمران | `waqf` (وقف), `wasl_2` (فتح الميم ومدها حركتين), `wasl_6` (فتح الميم ومدها ستة حركات) | `waqf` | طريقة قراءة {الم الله} في حالة الوصل |
+| `madd_yaa_alayn_alharfy` | مقدار المد اللازم الحرفي للعين | `2`, `4`, `6` | `6` | مقدار المد الحرفي اللازم لحرف العين في سورة مريم والشورى |
+| `saken_before_hamz` | الساكن قبل الهمز | `tahqeek` (تحقيق), `general_sakt` (سكت عام), `local_sakt` (سكت خاص) | `tahqeek` | كيفية قراءة الساكن قبل الهمز لقراءة حفص |
+| `sakt_iwaja` | السكت عند عوجا في الكهف | `sakt` (سكت), `waqf` (وقف), `idraj` (إدراج) | `waqf` | كيفية قراءة عوجا (Iwaja) في سورة الكهف |
+| `sakt_marqdena` | السكت عند مرقدنا في يس | `sakt` (سكت), `waqf` (وقف), `idraj` (إدراج) | `waqf` | كيفية قراءة مرقدنا (Marqadena) في سورة يس |
+| `sakt_man_raq` | السكت عند من راق في القيامة | `sakt` (سكت), `waqf` (وقف), `idraj` (إدراج) | `sakt` | كيفية قراءة من راق (Man Raq) في سورة القيامة |
+| `sakt_bal_ran` | السكت عند بل ران في المطففين | `sakt` (سكت), `waqf` (وقف), `idraj` (إدراج) | `sakt` | كيفية قراءة بل ران (Bal Ran) في سورة المطففين |
+| `sakt_maleeyah` | وجه قوله {ماليه هلك} بالحاقة | `sakt` (سكت), `waqf` (وقف), `idgham` (إدغام) | `waqf` | كيفية قراءة ماليه هلك في سورة الحاقة |
+| `between_anfal_and_tawba` | وجه بين الأنفال والتوبة | `waqf` (وقف), `sakt` (سكت), `wasl` (وصل) | `waqf` | كيفية قراءة نهاية سورة الأنفال وبداية سورة التوبة |
+| `noon_and_yaseen` | الإظهار في النون | `izhar` (إظهار), `idgham` (إدغام) | `izhar` | إدغام النون في يس ون والقلم |
+| `yaa_athan` | إثبات الياء وحذفها وقفا | `wasl` (وصل), `hadhf` (حذف), `ithbat` (إثبات) | `wasl` | إثبات أو حذف الياء في {آتاني} في سورة النمل |
+| `start_with_ism` | وجه البدأ بكلمة {الاسم} | `wasl` (وصل), `lism` (لسم), `alism` (ألسم) | `wasl` | حكم البدأ بكلمة الاسم في سورة الحجرات |
+| `yabsut` | السين والصاد في {يقبض ويبسط} | `seen` (سين), `saad` (صاد) | `seen` | النطق في سورة البقرة |
+| `bastah` | السين والصاد في {بسطة} | `seen` (سين), `saad` (صاد) | `seen` | النطق في سورة الأعراف |
+| `almusaytirun` | السين والصاد في {المصيطرون} | `seen` (سين), `saad` (صاد) | `saad` | النطق في سورة الطور |
+| `bimusaytir` | السين والصاد في {بمصيطر} | `seen` (سين), `saad` (صاد) | `saad` | النطق في سورة الغاشية |
+| `tasheel_or_madd` | همزة الوصل | `tasheel` (تسهيل), `madd` (مد) | `madd` | تسهيل أو مد همزة الوصل في {آلذكرين} |
+| `yalhath_dhalik` | الإدغام في {يلهث ذلك} | `izhar` (إظهار), `idgham` (إدغام), `waqf` (وقف) | `idgham` | الإدغام في سورة الأعراف |
+| `irkab_maana` | الإدغام في {اركب معنا} | `izhar` (إظهار), `idgham` (إدغام), `waqf` (وقف) | `idgham` | الإدغام في سورة هود |
+| `noon_tamnna` | الإشمام والروم في {تأمنا} | `ishmam` (إشمام), `rawm` (روم) | `ishmam` | الإشمام والروم في سورة يوسف |
+| `harakat_daaf` | حركة الضاد في {ضعف} | `fath` (فتح), `dam` (ضم) | `fath` | حركة الضاد في سورة الروم |
+| `alif_salasila` | الألف في {سلاسلا} | `hadhf` (حذف), `ithbat` (إثبات), `wasl` (وصل) | `wasl` | إثبات أو حذف الألف في سورة الإنسان |
+| `idgham_nakhluqkum` | إدغام القاف في الكاف | `idgham_kamil` (إدغام كامل), `idgham_naqis` (إدغام ناقص) | `idgham_kamil` | إدغام القاف في الكاف في سورة المرسلات |
+| `raa_firq` | راء {فرق} في الشعراء | `waqf` (وقف), `tafkheem` (تفخيم), `tarqeeq` (ترقيق) | `tafkheem` | تفخيم وترقيق الراء في سورة الشعراء |
+| `raa_alqitr` | راء {القطر} في سبأ | `wasl` (وصل), `tafkheem` (تفخيم), `tarqeeq` (ترقيق) | `wasl` | تفخيم وترقيق الراء في سورة سبأ |
+| `raa_misr` | راء {مصر} في يونس | `wasl` (وصل), `tafkheem` (تفخيم), `tarqeeq` (ترقيق) | `wasl` | تفخيم وترقيق الراء في سورة يونس |
+| `raa_nudhur` | راء {نذر} في القمر | `wasl` (وصل), `tafkheem` (تفخيم), `tarqeeq` (ترقيق) | `tafkheem` | تفخيم وترقيق الراء في سورة القمر |
+| `raa_yasr` | راء {يسر} بالفجر | `wasl` (وصل), `tafkheem` (تفخيم), `tarqeeq` (ترقيق) | `tarqeeq` | تفخيم وترقيق الراء في سورة الفجر |
+| `meem_mokhfah` | هل الميم مخفاة أو مدغمة | `meem` (ميم), `ikhfaa` (إخفاء) | `ikhfaa` | إخفاء أو إدغام الميم في حالة الإخفاء |
+
+---
+
+## قواعد التجويد (Tajweed Rules)
+
+قواعد التجويد المستخدمة في تحليل الأخطاء. يتم استيرادها من `quran_transcript.phonetics.tajweed_rulses`:
+
+| القاعدة | العربية | نوع الفحص | الطول المرجعي | الوصف |
+|---------|---------|-----------|---------------|-------|
+| `Qalqalah` | قلقة | `match` | 0 | قلقلة - حركة الحرف الساكن عند النطق به |
+| `NormalMaddRule` | المد الطبيعي | `count` | 2 | المد الطبيعي الذي يأتي بشكل عادي في الكلمة |
+| `MonfaselMaddRule` | المد المنفصل | `count` | 4 | المد المنفصل بين الكلمتين |
+| `MottaselMaddRule` | المد المتصل | `count` | 4 | المد المتصل بين حروف الكلمة |
+| `MottaselMaddPauseRule` | المد المتصل وقفا | `count` | 4 | المد المتصل عند الوقف |
+| `LazemMaddRule` | المد اللازم | `count` | 6 | المد اللازم في الحروف المعينة (مثل الميم في الميم) |
+| `AaredMaddRule` | المد العارض للسكون | `count` | 4 | المد الذي يظهر عند الوقف على كلمة معينة |
+| `LeenMaddRule` | مد اللين | `count` | 4 | مد اللين للواو الساكنة والياء الساكنة قبلها حرف مفتوح |
+
+### شرح أنواع قواعد التجويد
+
+1. **Qalqalah (قلقة)**: حركة الحرف الساكن عند النطق به، وتحدث في حروف القلقلة: ق، ط، ب، ج، د
+2. **NormalMaddRule (المد الطبيعي)**: المد العادي الذي يأتي في الكلمة بشكل طبيعي، طوله حركتان
+3. **MonfaselMaddRule (المد المنفصل)**: المد بين الكلمتين عندما ينتهي بكلمة وينتهي آخرها بحرف من حروف المد
+4. **MottaselMaddRule (المد المتصل)**: المد داخل الكلمة بين حروف المد
+5. **MottaselMaddPauseRule (المد المتصل وقفا)**: المد المتصل عند الوقف على كلمة معينة
+6. **LazemMaddRule (المد اللازم)**: المد اللازم في الحروف المعينة مثل الميم في {الم} والهمزة في {ءآل}
+7. **AaredMaddRule (المد العارض للسكون)**: المد الذي يظهر عند الوقف بسبب السكون
+8. **LeenMaddRule (مد اللين)**: مد اللين للواو الساكنة والياء الساكنة وقبلهما حرف مفتوح
+
+---
+
+## مثال كامل: تصحيح التلاوة
+
+### الأمر (curl)
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8001/correct-recitation' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'error_ratio=0.1' \
+  -F 'file=@WhatsApp Ptt 2026-02-20 at 1.56.35 PM.ogg;type=application/ogg'
+```
+
+### الاستجابة (JSON)
+
+```json
+{
+  "start": {
+    "sura_idx": 2,
+    "aya_idx": 1,
+    "uthmani_word_idx": 0,
+    "uthmani_char_idx": 0,
+    "phonemes_idx": 0
+  },
+  "end": {
+    "sura_idx": 2,
+    "aya_idx": 1,
+    "uthmani_word_idx": 0,
+    "uthmani_char_idx": 5,
+    "phonemes_idx": 25
+  },
+  "predicted_phonemes": "ءَلِفلَااممِۦۦم",
+  "reference_phonemes": "ءَلِفلَااااااممممِۦۦۦۦۦۦم",
+  "uthmani_text": "الٓمٓ",
+  "errors": [
+    {
+      "uthmani_pos": [1, 2],
+      "ph_pos": [7, 13],
+      "error_type": "tajweed",
+      "speech_error_type": "replace",
+      "expected_ph": "اااااا",
+      "preditected_ph": "اا",
+      "expected_len": 6,
+      "predicted_len": 2,
+      "ref_tajweed_rules": [
+        {
+          "name": {"ar": "المد اللازم", "en": "Lazem Madd"},
+          "golden_len": 6,
+          "correctness_type": "count",
+          "tag": "alif"
+        }
+      ],
+      "inserted_tajweed_rules": null,
+      "replaced_tajweed_rules": null,
+      "missing_tajweed_rules": null
+    },
+    {
+      "uthmani_pos": [3, 4],
+      "ph_pos": [13, 18],
+      "error_type": "tajweed",
+      "speech_error_type": "replace",
+      "expected_ph": "ممممِ",
+      "preditected_ph": "ممِ",
+      "expected_len": 6,
+      "predicted_len": 2,
+      "ref_tajweed_rules": [
+        {
+          "name": {"ar": "المد اللازم", "en": "Lazem Madd"},
+          "golden_len": 6,
+          "correctness_type": "count",
+          "tag": "yaa"
+        }
+      ],
+      "inserted_tajweed_rules": null,
+      "replaced_tajweed_rules": null,
+      "missing_tajweed_rules": null
+    },
+    {
+      "uthmani_pos": [3, 4],
+      "ph_pos": [18, 24],
+      "error_type": "tajweed",
+      "speech_error_type": "replace",
+      "expected_ph": "ۦۦۦۦۦۦ",
+      "preditected_ph": "ۦۦ",
+      "expected_len": 6,
+      "predicted_len": 2,
+      "ref_tajweed_rules": [
+        {
+          "name": {"ar": "المد اللازم", "en": "Lazem Madd"},
+          "golden_len": 6,
+          "correctness_type": "count",
+          "tag": "yaa"
+        }
+      ],
+      "inserted_tajweed_rules": null,
+      "replaced_tajweed_rules": null,
+      "missing_tajweed_rules": null
+    }
+  ]
+}
+```
+
+### شرح الاستجابة
+
+- **start/end**: موقع النتيجة في القرآن (رقم السورة، رقم الآية، موقع الكلمة، موقع الحرف، موقع الفونيم)
+- **predicted_phonemes**: الفونيمات المتوقعة من الصوت
+- **reference_phonemes**: الفونيمات المرجعية من النص القرآني باستخدام خصائص المصحف
+- **uthmani_text**: النص العثماني المطابق
+- **errors**: قائمة الأخطاء المكتشفة، كل خطأ يحتوي على:
+  - **error_type**: نوع الخطأ (`tajweed` = تجودي، `normal` = عادي، `tashkeel` = تشكيل)
+  - **speech_error_type**: نوع خطأ الكلام (`insert` = إدخال، `delete` = حذف، `replace` = استبدال)
+  - **expected_ph/predicted_ph**: الفونيم المتوقع والمتنبأ به
+  - **expected_len/predicted_len**: الطول المتوقع والمتنبأ به (لمدود مثل المد اللازم)
+  - **ref_tajweed_rules**: قواعد التجويد المرجعية التي يجب تطبيقها
+
+---
+
+## وثائق OpenAPI التفاعلية
+
+للحصول على وثائق تفاعلية كاملة مع أمثلة وأوصاف مفصلة لكل المعلمة، الرجاء زيارة:
+
+- **التطبيق (App)**: http://localhost:8001/docs
+- **المحرك (Engine)**: http://localhost:8000/docs
+
+تحتوي هذه الوثائق على:
+- جميع نقاط النهاية مع أوصافها الكاملة
+- جميع المعاملات مع قيمها الافتراضية ونوع البيانات
+- أمثلة تفاعلية لكل نقطة نهاية
+- مخططات الاستجابة الكاملة
+- إمكانية التنفيذ المباشر من المتصفح
 ```
