@@ -16,7 +16,7 @@ async def send_request(
     client: httpx.AsyncClient, url: str, file_bytes: bytes, idx: int
 ):
     """Send a single request and return its latency in seconds."""
-    files = {"file": ("test.wav", file_bytes, "audio/wav")}
+    files = {"request": ("test.wav", file_bytes, "audio/wav")}
     start = time.perf_counter()
     try:
         resp = await client.post(url, files=files)

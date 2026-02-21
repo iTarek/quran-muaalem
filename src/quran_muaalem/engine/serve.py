@@ -1,11 +1,13 @@
 import io
 import time
+from typing import Annotated
 
 import librosa
 import torch
 import litserve as ls
 from transformers import AutoFeatureExtractor
 import numpy as np
+from fastapi import File, UploadFile
 
 from ..modeling.modeling_multi_level_ctc import Wav2Vec2BertForMultilevelCTC
 from ..modeling.multi_level_tokenizer import MultiLevelTokenizer
@@ -62,9 +64,9 @@ class QuranMuaalemAPI(ls.LitAPI):
         self.model.to(device, dtype=self.dtype)
         self.model.eval()
 
-    def decode_request(self, request):
-        audio_file = request["file"]
-        audio_bytes = audio_file.file.read()
+    def decode_request(self, request: Annotated[UploadFile, File()]):
+        # audio_bytes = request  # directly use the bytes
+        audio_bytes = request.file.read()
 
         audio_array, sr = librosa.load(
             io.BytesIO(audio_bytes),
