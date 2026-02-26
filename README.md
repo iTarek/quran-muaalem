@@ -1,15 +1,14 @@
 <div align="center">
 
-**English** | [Arabic](README_AR.md)
+[English](README_EN.md) | **العربية**
 
 </div>
 
 ---
-
 # Quran Muaalem
 
 <div align="center">
-<strong>With the help and guidance of Allah alone, we present the Intelligent Quran Teacher capable of detecting recitation errors, tajweed rules, and letter characteristics</strong>
+<strong>بعون الله وتوفيقه لا شريك له نقدم المعلم القرآني الذكي القادر على كشف أخطاء التلاوة والتجويد وصفات الحروف</strong>
 
 [![PyPI][pypi-badge]][pypi-url]
 [![Python Versions][python-badge]][python-url]
@@ -40,78 +39,77 @@
 [discord-url]: https://discord.gg/hJWW6fCH
 
 <div align="center" style="background-color: #f0f8ff; border-left: 5px solid #4CAF50; padding: 15px; margin: 20px 0; border-radius: 5px;">
-  <h3 style="color: #2c3e50; margin-top: 0;">📖 Try the Quran Muaalem Demo</h3>
-  <p style="margin: 10px 0;">Click to try it out:</p>
-  <a href="https://662a040e1863a5445c.gradio.live" style="display: inline-block; background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 10px 0;">Demo Link</a>
+  <h3 style="color: #2c3e50; margin-top: 0;">📖 رابط لتجربة المعلم القرآني</h3>
+  <p style="margin: 10px 0;">يرجى الضغط على للتجربة:</p>
+  <a href="https://662a040e1863a5445c.gradio.live" style="display: inline-block; background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 10px 0;">الرابط</a>
   <p style="background-color: #ffeb3b; padding: 8px; border-radius: 3px; display: inline-block; margin: 10px 0;">
-    ⚠️ <strong>Note:</strong> This link will expire on <span style="color: #d32f2f; font-weight: bold;">August 27, 2025</span>
+    ⚠️ <strong>تنبيه:</strong> هذا الرابط سينتهي في <span style="color: #d32f2f; font-weight: bold;">27 أغسطس 2025</span>
   </p>
 </div>
 
 [![ALT_TEXT](https://img.youtube.com/vi/CsFoznO08-Q/0.jpg)](https://www.youtube.com/watch?v=CsFoznO08-Q)
 
 
-## Features
+## الممزيات
 
-* Trained on phonetic transcription of the Holy Quran: [quran-transcript](https://github.com/obadx/quran-transcript) - capable of detecting letter errors, tajweed, and letter characteristics
-* Reasonable model size: 660M parameters
-* Requires only 1.5 GB of GPU memory
-* Innovative architecture: Multi-level CTC
+* مدرب على الرسم الصوتي للقرآن الكريم: [quran-transcript](https://github.com/obadx/quran-transcript) القادر على كشف أخطاء الحروف والتجويد وصفات الحروف
+* نموذج معقول الحجم 660 MP 
+* يحتاج فقط إله 1.5 GB من ذاكرة معالج الرسوميات
+* معمارية مبتكرة: CTC متعدد المستويات
 
-## Architecture
-
-Innovative architecture: Multi-level CTC, where each level trains on a specific aspect.
+## المعمارية
+معمارية مبتكرة: CTC متعدد المستويات. حيث كل مستوي يتدرب على وجه معين
 
 ![multi-lvel-ctc](./assets/figures/mutli-level-ctc.png)
 
-## Development Steps
+## الخطوات المختصرة للتطوير
 
-* Collecting Quranic recitations from proficient reciters: [prepare-quran-dataset](https://github.com/obadx/prepare-quran-dataset)
-* Segmenting recitations by pause points (not verses) using the [segmenter](https://github.com/obadx/recitations-segmenter)
-* Extracting Quranic text from audio segments using the [Tarteel model](https://huggingface.co/tarteel-ai/whisper-base-ar-quran)
-* Correcting extracted text using the [tasme'a (memorization verification) algorithm](https://github.com/obadx/quran-transcript)
-* Converting standard script to Uthmani script: [quran-transcript](https://github.com/obadx/quran-transcript)
-* Converting Uthmani script to Quranic phonetic script describing all tajweed rules (except ishmam): [quran-transcript](https://github.com/obadx/quran-transcript)
-* Training the model on [Wav2Vec2BERT](https://huggingface.co/docs/transformers/model_doc/wav2vec2-bert) architecture
-
-
-## Using the Model
+* تجميع التلاوت القرآنية من القراء المتقنين: [prepare-quran-dataset](https://github.com/obadx/prepare-quran-dataset)
+* تقسيم التلاوت على حسب الوقف وليس الآية باستخدام [المقسم](https://github.com/obadx/recitations-segmenter)
+* الحصو على النص القرآني من المقاطع الصوتية باسخدام [نموذج ترتيل](https://huggingface.co/tarteel-ai/whisper-base-ar-quran)
+* تصحيح النصوص المستخرجة من ترتيل باستخدام  [خوارزمية التسميع](https://github.com/obadx/quran-transcript)
+* تحويل الرسم الإملائي للرسم العثماني: [quran-transcript](https://github.com/obadx/quran-transcript)
+* تحويل الرسم العثماني للرسم الصوتي للقرآني الكريم الذي يصف كل قواعد التجويد ما عدا الإشمام: [quran-transcript](https://github.com/obadx/quran-transcript)
+* تدريب النموذج على معمارية [Wav2Vec2BERT](https://huggingface.co/docs/transformers/model_doc/wav2vec2-bert)
 
 
-### Using the Model via Gradio Interface
+## استخدام النوذج
 
-Install [uv](https://docs.astral.sh/uv/):
+
+### استخدام النموذج عن طريق واجهة gradio
+
+قم بتزيل  [uv](https://docs.astral.sh/uv/) 
 
 ```bash
 pip install uv
 ```
-Or:
+أو
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-Then install `ffmpeg`:
+بعد ذلك قم بتنزيل `ffmpeg`
 
 ```bash
 sudo apt-get update
 sudo apt-get install -y ffmpeg
 ```
 
-Or via `anaconda`:
+أو من خلال `anaconda`
 ```bash
 conda install ffmpeg
 ```
 
-Run `gradio` with a single command:
+قم بتشغيل `gradio` ب command واحد فقط:
 ```bash
 uvx --no-cache --from https://github.com/obadx/quran-muaalem.git[ui]  quran-muaalem-ui
 ```
-Or:
+او
 ```bash
 uvx quran-muaalem[ui]  quran-muaalem-ui
 ```
 
-### Via Python API
+### عن طريق python API
 
 
 #### Installation
@@ -150,18 +148,18 @@ logging.basicConfig(level=logging.INFO)
 def analyze_recitation(audio_path):
     """
     Analyze a Quranic recitation audio file using the Muaalem model.
-
+    
     Args:
         audio_path (str): Path to the audio file to analyze
     """
     # Configuration
     sampling_rate = 16000  # Must be 16000 Hz
     device = "cuda" if torch.cuda.is_available() else "cpu"  # Use GPU if available
-
+    
     # Step 1: Prepare the Quranic reference text
     # Get the Uthmani script for a specific verse (Aya 8, Surah 75 in this example)
     uthmani_ref = Aya(8, 75).get_by_imlaey_words(17, 9).uthmani
-
+    
     # Step 2: Configure the recitation style (Moshaf attributes)
     moshaf = MoshafAttributes(
         rewaya="hafs",        # Recitation style (Hafs is most common)
@@ -171,17 +169,17 @@ def analyze_recitation(audio_path):
         madd_aared_len=2,     # Length of necessary elongation
     )
     # see: https://github.com/obadx/prepare-quran-dataset?tab=readme-ov-file#moshaf-attributes-docs
-
+    
     # Step 3: Convert text to phonetic representation
     # see docs for phnetizer: https://github.com/obadx/quran-transcript
     phonetizer_out = quran_phonetizer(uthmani_ref, moshaf, remove_spaces=True)
-
+    
     # Step 4: Initialize the Muaalem model
     muaalem = Muaalem(device=device)
-
+    
     # Step 5: Load and prepare the audio
     wave, _ = load(audio_path, sr=sampling_rate, mono=True)
-
+    
     # Step 6: Process the audio with the model
     # The model analyzes the phonetic properties of the recitation
     outs = muaalem(
@@ -189,11 +187,11 @@ def analyze_recitation(audio_path):
         [phonetizer_out],          # Phonetic reference
         sampling_rate=sampling_rate
     )
-
+    
     # Step 7: Display the results
     for out in outs:
         print("Predicted Phonemes:", out.phonemes.text)
-
+        
         # Display detailed phonetic features for each phoneme
         for sifa in out.sifat:
             print(json.dumps(asdict(sifa), indent=2, ensure_ascii=False))
@@ -212,7 +210,7 @@ def analyze_recitation(audio_path):
 if __name__ == "__main__":
     # Replace with the path to your audio file
     audio_path = "./assets/test.wav"
-
+    
     try:
         analyze_recitation(audio_path)
     except Exception as e:
@@ -260,6 +258,7 @@ Output:
 | ۥۥ | not_motafashie | not_moqalqal | not_maghnoon | jahr | no_safeer | not_mokarar | moraqaq | not_mostateel | rikhw | monfateh |
 | لِ | not_motafashie | not_moqalqal | not_maghnoon | jahr | no_safeer | not_mokarar | moraqaq | not_mostateel | between | monfateh |
 | ه | not_motafashie | not_moqalqal | not_maghnoon | hams | no_safeer | not_mokarar | moraqaq | not_mostateel | rikhw | monfateh |
+
 
 
 ### API Docs
@@ -335,174 +334,174 @@ class Muaalem:
 
 ---
 
-## API Servers
+## خوادم API
 
-The engine has two main features:
-1. Voice search in the Holy Quran
-2. Correcting Quranic recitations with tajweed rules
+يحتوي المحرك على ميزتين أساسيتين :
+1. البحث بالصوت في القرآن الكريم
+2. تصحيح التلاوات القرآنية بقواعد التجويد
 
-The API consists of:
+يتكون ال API من:
 
-1. **Engine**: Runs the Wav2Vec2-BERT model to convert audio to phonemes
-2. **App**: Provides search, correction, and transcription interfaces
+1. **المحرك (Engine)**: يشغّل نموذج Wav2Vec2-BERT لتحويل الصوت إلى فونيمات
+2. **التطبيق (App)**: يوفر واجهات البحث والتصحيح والنسخ
 
-### Installation
+### التثبيت
 
 ```bash
 uv add quran-muaalem[engine]
 ```
 
-### Running the Servers
+### تشغيل الخوادم
 
 ```bash
-# First terminal: Run the engine (port 8000)
+# الطرفية الأولى: تشغيل المحرك (منفذ 8000)
 uv run quran-muaalem-engine
 
-# Second terminal: Run the app (port 8001)
+# الطرفية الثانية: تشغيل التطبيق (منفذ 8001)
 uv run quran-muaalem-app
 ```
 
 ---
 
-## Engine Settings
+## إعدادات المحرك (EngineSettings)
 
-Settings are located in `src/quran_muaalem/engine/settings.py`:
+الإعدادات موجودة في `src/quran_muaalem/engine/settings.py`:
 
-| Setting | Type | Default | Description |
-|---------|------|---------|-------------|
-| `model_name_or_path` | string | `obadx/muaalem-model-v3_2` | HuggingFace model path |
-| `dtype` | string | `bfloat16` | Data type: `float32`, `float16`, `bfloat16` |
-| `max_audio_seconds` | float | `15` | Maximum audio length in seconds |
-| `max_batch_size` | int | `128` | Maximum batch size for processing |
-| `batch_timeout` | float | `0.4` | Batch wait timeout in seconds |
-| `host` | string | `0.0.0.0` | Server bind address |
-| `port` | int | `8000` | Server port |
-| `accelerator` | string | `cuda` | Hardware accelerator: `cuda`, `cpu`, `mps` |
-| `devices` | int | `1` | Number of devices |
-| `workers_per_device` | int | `1` | Number of workers per device |
-| `timeout` | float | `90.0` | Request timeout in seconds |
-
----
-
-## App Settings
-
-Settings are located in `src/quran_muaalem/app/settings.py`:
-
-| Setting | Default | Description |
-|---------|---------|-------------|
-| `engine_url` | `http://0.0.0.0:8000/predict` | URL for the engine's `/predict` endpoint |
-| `host` | `0.0.0.0` | Server bind address |
-| `port` | `8001` | Server port |
-| `error_ratio` | `0.1` | Allowed error ratio for search (0.0-1.0) |
-| `max_workers_phonetic_search` | `cpu_count // 2` | Number of concurrent phonetic search workers |
-| `max_workers_phonetization` | `cpu_count // 2` | Number of concurrent phonetization workers |
+| الإعداد | النوع | القيمة الافتراضية | الوصف |
+|---------|-------|-------------------|-------|
+| `model_name_or_path` | string | `obadx/muaalem-model-v3_2` | مسار نموذج HuggingFace |
+| `dtype` | string | `bfloat16` | نوع البيانات: `float32`, `float16`, `bfloat16` |
+| `max_audio_seconds` | float | `15` | الحد الأقصى لطول الصوت بالثواني |
+| `max_batch_size` | int | `128` | حجم الدفعة القصوى للمعالجة |
+| `batch_timeout` | float | `0.4` | مهلة الانتظار للدفعة بالثواني |
+| `host` | string | `0.0.0.0` | عنوان ربط الخادم |
+| `port` | int | `8000` | منفذ الخادم |
+| `accelerator` | string | `cuda` | معالج الأجهزة: `cuda`, `cpu`, `mps` |
+| `devices` | int | `1` | عدد الأجهزة |
+| `workers_per_device` | int | `1` | عدد العمال لكل جهاز |
+| `timeout` | float | `90.0` | مهلة الطلب بالثواني |
 
 ---
 
-## Endpoints
+## إعدادات التطبيق (AppSettings)
 
-### Engine (Port 8000)
+الإعدادات موجودة في `src/quran_muaalem/app/settings.py`:
 
-| Endpoint | Description |
-|----------|-------------|
-| `/predict` | Convert audio to phonemes |
-| `/health` | Server health check |
-| `/docs` | Interactive OpenAPI documentation |
-| `/redoc` | Alternative ReDoc documentation |
-
-### App (Port 8001)
-
-| Endpoint | Description |
-|----------|-------------|
-| `/health` | Check app status and connection to the engine |
-| `/search` | Search the Quran by audio or phonetic text |
-| `/correct-recitation` | Analyze recitation and detect tajweed errors |
-| `/transcript` | Transcribe audio to phonetic text (proxy to engine) |
-| `/docs` | Interactive OpenAPI documentation |
-| `/redoc` | Alternative ReDoc documentation |
+| الإعداد | القيمة الافتراضية | الوصف |
+|---------|-------------------|-------|
+| `engine_url` | `http://0.0.0.0:8000/predict` | رابط نقطة `/predict` في المحرك |
+| `host` | `0.0.0.0` | عنوان ربط الخادم |
+| `port` | `8001` | منفذ الخادم |
+| `error_ratio` | `0.1` | نسبة الخطأ المسموحة للبحث (0.0-1.0) |
+| `max_workers_phonetic_search` | `cpu_count // 2` | عدد عمليات البحث الصوتية المتزامنة |
+| `max_workers_phonetization` | `cpu_count // 2` | عدد عمليات الفونتة المتزامنة |
 
 ---
 
-## Moshaf Attributes
+## نقاط النهاية
 
-These attributes define the recitation rules for Hafs reading. All fields are optional:
+### المحرك (Engine) - المنفذ 8000
 
-| Attribute | Arabic | Values | Default | Description |
-|-----------|--------|--------|---------|-------------|
-| `rewaya` | الرواية | `hafs` (حفص) | `hafs` | Type of Quran recitation |
-| `recitation_speed` | سرعة التلاوة | `mujawad` (مجود), `above_murattal` (فويق المرتل), `murattal` (مرتل), `hadr` (حدر) | `murattal` | Recitation speed ordered from slowest to fastest |
-| `takbeer` | التكبير | `no_takbeer` (لا تكبير), `beginning_of_sharh` (التكبير من أول الشرح لأول الناس), `end_of_doha` (التكبير من آخر الضحى لآخر الناس), `general_takbeer` (التكبير أول كل سورة إلا التوبة) | `no_takbeer` | Methods of adding takbeer (Allahu Akbar) after isti'adha and between end of surah and beginning of surah |
-| `madd_monfasel_len` | مد المنفصل | `2`, `3`, `4`, `5` | `4` | Length of separated madd (madd al-munfasil) for Hafs reading |
-| `madd_mottasel_len` | مقدار المد المتصل | `4`, `5`, `6` | `4` | Length of connected madd for Hafs reading |
-| `madd_mottasel_waqf` | مقدار المد المتصل وقفا | `4`, `5`, `6` | `4` | Length of connected madd when stopping for Hafs reading |
-| `madd_aared_len` | مقدار مد العارض | `2`, `4`, `6` | `4` | Length of madd al-'arid lil-sukun (temporary madd due to stopping) |
-| `madd_alleen_len` | مقدار مد اللين | `2`, `4`, `6` | `None` | Length of leen madd when stopping (defaults to madd_aared_len) |
-| `ghonna_lam_and_raa` | غنة اللام و الراء | `ghonna` (غنة), `no_ghonna` (لا غنة) | `no_ghonna` | Ghunna in idgham of noon with lam and raa for Hafs reading |
-| `meem_aal_imran` | ميم آل عمران | `waqf` (وقف), `wasl_2` (فتح الميم ومدها حركتين), `wasl_6` (فتح الميم ومدها ستة حركات) | `waqf` | Method of reciting {الم الله} in connected recitation |
-| `madd_yaa_alayn_alharfy` | مقدار المد اللازم الحرفي للعين | `2`, `4`, `6` | `6` | Length of required letter madd for letter 'ayn in Surah Maryam and Ash-Shura |
-| `saken_before_hamz` | الساكن قبل الهمز | `tahqeek` (تحقيق), `general_sakt` (سكت عام), `local_sakt` (سكت خاص) | `tahqeek` | How to recite the silent letter before hamza for Hafs reading |
-| `sakt_iwaja` | السكت عند عوجا في الكهف | `sakt` (سكت), `waqf` (وقف), `idraj` (إدراج) | `waqf` | How to recite 'iwaja in Surah Al-Kahf |
-| `sakt_marqdena` | السكت عند مرقدنا في يس | `sakt` (سكت), `waqf` (وقف), `idraj` (إدراج) | `waqf` | How to recite 'marqadena' in Surah Ya-Sin |
-| `sakt_man_raq` | السكت عند من راق في القيامة | `sakt` (سكت), `waqf` (وقف), `idraj` (إدراج) | `sakt` | How to recite 'man raq' in Surah Al-Qiyamah |
-| `sakt_bal_ran` | السكت عند بل ران في المطففين | `sakt` (سكت), `waqf` (وقف), `idraj` (إدراج) | `sakt` | How to recite 'bal ran' in Surah Al-Mutaffifin |
-| `sakt_maleeyah` | وجه قوله {ماليه هلك} بالحاقة | `sakt` (سكت), `waqf` (وقف), `idgham` (إدغام) | `waqf` | How to recite 'maaliyah halak' in Surah Al-Haqqah |
-| `between_anfal_and_tawba` | وجه بين الأنفال والتوبة | `waqf` (وقف), `sakt` (سكت), `wasl` (وصل) | `waqf` | How to recite the transition between Surah Al-Anfal and Surah At-Tawbah |
-| `noon_and_yaseen` | الإظهار في النون | `izhar` (إظهار), `idgham` (إدغام) | `izhar` | Idgham of noon in Ya-Sin and Noon wal-Qalam |
-| `yaa_athan` | إثبات الياء وحذفها وقفا | `wasl` (وصل), `hadhf` (حذف), `ithbat` (إثبات) | `wasl` | Affirmation or deletion of yaa in {آتاني} in Surah An-Naml |
-| `start_with_ism` | وجه البدأ بكلمة {الاسم} | `wasl` (وصل), `lism` (لسم), `alism` (ألسم) | `wasl` | Ruling on starting with the word 'al-ism' in Surah Al-Hujurat |
-| `yabsut` | السين والصاد في {يقبض ويبسط} | `seen` (سين), `saad` (صاد) | `seen` | Pronunciation in Surah Al-Baqarah |
-| `bastah` | السين والصاد في {بسطة} | `seen` (سين), `saad` (صاد) | `seen` | Pronunciation in Surah Al-A'raf |
-| `almusaytirun` | السين والصاد في {المصيطرون} | `seen` (سين), `saad` (صاد) | `saad` | Pronunciation in Surah At-Tur |
-| `bimusaytir` | السين والصاد في {بمصيطر} | `seen` (سين), `saad` (صاد) | `saad` | Pronunciation in Surah Al-Ghashiyah |
-| `tasheel_or_madd` | همزة الوصل | `tasheel` (تسهيل), `madd` (مد) | `madd` | Tasheel or madd of hamzat al-wasl in {آلذكرين} |
-| `yalhath_dhalik` | الإدغام في {يلهث ذلك} | `izhar` (إظهار), `idgham` (إدغام), `waqf` (وقف) | `idgham` | Idgham in Surah Al-A'raf |
-| `irkab_maana` | الإدغام في {اركب معنا} | `izhar` (إظهار), `idgham` (إدغام), `waqf` (وقف) | `idgham` | Idgham in Surah Hud |
-| `noon_tamnna` | الإشمام والروم في {تأمنا} | `ishmam` (إشمام), `rawm` (روم) | `ishmam` | Ishmam and rawm in Surah Yusuf |
-| `harakat_daaf` | حركة الضاد في {ضعف} | `fath` (فتح), `dam` (ضم) | `fath` | Vowel of daad in Surah Ar-Rum |
-| `alif_salasila` | الألف في {سلاسلا} | `hadhf` (حذف), `ithbat` (إثبات), `wasl` (وصل) | `wasl` | Affirmation or deletion of alif in Surah Al-Insan |
-| `idgham_nakhluqkum` | إدغام القاف في الكاف | `idgham_kamil` (إدغام كامل), `idgham_naqis` (إدغام ناقص) | `idgham_kamil` | Idgham of qaf into kaf in Surah Al-Mursalat |
-| `raa_firq` | راء {فرق} في الشعراء | `waqf` (وقف), `tafkheem` (تفخيم), `tarqeeq` (ترقيق) | `tafkheem` | Tafkheem and tarqeeq of raa in Surah Ash-Shu'ara |
-| `raa_alqitr` | راء {القطر} في سبأ | `wasl` (وصل), `tafkheem` (تفخيم), `tarqeeq` (ترقيق) | `wasl` | Tafkheem and tarqeeq of raa in Surah Saba |
-| `raa_misr` | راء {مصر} في يونس | `wasl` (وصل), `tafkheem` (تفخيم), `tarqeeq` (ترقيق) | `wasl` | Tafkheem and tarqeeq of raa in Surah Yunus |
-| `raa_nudhur` | راء {نذر} في القمر | `wasl` (وصل), `tafkheem` (تفخيم), `tarqeeq` (ترقيق) | `tafkheem` | Tafkheem and tarqeeq of raa in Surah Al-Qamar |
-| `raa_yasr` | راء {يسر} بالفجر | `wasl` (وصل), `tafkheem` (تفخيم), `tarqeeq` (ترقيق) | `tarqeeq` | Tafkheem and tarqeeq of raa in Surah Al-Fajr |
-| `meem_mokhfah` | هل الميم مخفاة أو مدغمة | `meem` (ميم), `ikhfaa` (إخفاء) | `ikhfaa` | Ikhfaa or idgham of meem in the state of ikhfaa |
+| النقطة | الوصف |
+|--------|-------|
+| `/predict` | تحويل الصوت إلى فونيمات |
+| `/health` | فحص حالة الخادم |
+| `/docs` | وثائق OpenAPI التفاعلية |
+| `/redoc` | وثائق ReDoc البديلة |
+
+### التطبيق (App) - المنفذ 8001
+
+| النقطة | الوصف |
+|--------|-------|
+| `/health` | فحص حالة التطبيق والاتصال بالمحرك |
+| `/search` | البحث في القرآن بالصوت أو النص الصوتي |
+| `/correct-recitation` | تحليل التلاوة واكتشاف أخطاء التجويد |
+| `/transcript` | نسخ الصوت إلى نص صوتي (وكيل للمحرك) |
+| `/docs` | وثائق OpenAPI التفاعلية |
+| `/redoc` | وثائق ReDoc البديلة |
 
 ---
 
-## Tajweed Rules
+## خصائص المصحف (MoshafAttributes)
 
-Tajweed rules used in error analysis. Imported from `quran_transcript.phonetics.tajweed_rulses`:
+هذه الخصائص تُعرّف قواعد التلاوة لقراءة حفص. جميع الحقول اختيارية:
 
-| Rule | Arabic | Check Type | Reference Length | Description |
-|------|--------|------------|------------------|-------------|
-| `Qalqalah` | قلقة | `match` | 0 | Qalqalah - echoing vibration when pronouncing a silent letter |
-| `NormalMaddRule` | المد الطبيعي | `count` | 2 | Natural madd that occurs naturally in a word |
-| `MonfaselMaddRule` | المد المنفصل | `count` | 4 | Separated madd between two words |
-| `MottaselMaddRule` | المد المتصل | `count` | 4 | Connected madd within a word |
-| `MottaselMaddPauseRule` | المد المتصل وقفا | `count` | 4 | Connected madd when stopping |
-| `LazemMaddRule` | المد اللازم | `count` | 6 | Required madd in specific letters (such as the meem in Alif-Lam-Meem) |
-| `AaredMaddRule` | المد العارض للسكون | `count` | 4 | Temporary madd that appears when stopping on a specific word |
-| `LeenMaddRule` | مد اللين | `count` | 4 | Leen madd for silent waw and yaa preceded by a letter with fatha |
-
-### Tajweed Rule Types Explained
-
-1. **Qalqalah (قلقة)**: An echoing vibration when pronouncing a silent letter, occurring in the qalqalah letters: ق (qaf), ط (ta), ب (ba), ج (jim), د (dal)
-2. **NormalMaddRule (المد الطبيعي)**: The natural madd that occurs in a word naturally, with a length of two counts
-3. **MonfaselMaddRule (المد المنفصل)**: The madd between two words when one word ends with a madd letter
-4. **MottaselMaddRule (المد المتصل)**: The madd within a word between madd letters
-5. **MottaselMaddPauseRule (المد المتصل وقفا)**: The connected madd when stopping on a specific word
-6. **LazemMaddRule (المد اللازم)**: The required madd in specific letters such as the meem in {الم} and the hamza in {ءآل}
-7. **AaredMaddRule (المد العارض للسكون)**: The madd that appears when stopping due to sukun (silence)
-8. **LeenMaddRule (مد اللين)**: The leen madd for silent waw and yaa preceded by a letter with fatha (opening vowel)
+| الخاصية | العربية | القيم | القيمة الافتراضية | الوصف |
+|---------|---------|-------|-------------------|-------|
+| `rewaya` | الرواية | `hafs` (حفص) | `hafs` | نوع قراءة القرآن |
+| `recitation_speed` | سرعة التلاوة | `mujawad` (مجود), `above_murattal` (فويق المرتل), `murattal` (مرتل), `hadr` (حدر) | `murattal` | سرعة التلاوة مرتبة من الأبطأ إلى الأسرع |
+| `takbeer` | التكبير | `no_takbeer` (لا تكبير), `beginning_of_sharh` (التكبير من أول الشرح لأول الناس), `end_of_doha` (التكبير من آخر الضحى لآخر الناس), `general_takbeer` (التكبير أول كل سورة إلا التوبة) | `no_takbeer` | طرق إضافة التكبير (الله أكبر) بعد الاستعاذة (استعاذة) وبين نهاية السورة وبداية السورة |
+| `madd_monfasel_len` | مد المنفصل | `2`, `3`, `4`, `5` | `4` | مقدار مد المنفصل (مد النفصل) لقراءة حفص |
+| `madd_mottasel_len` | مقدار المد المتصل | `4`, `5`, `6` | `4` | مقدار المد المتصل لقراءة حفص |
+| `madd_mottasel_waqf` | مقدار المد المتصل وقفا | `4`, `5`, `6` | `4` | مقدار المد المتصل عند الوقف لقراءة حفص |
+| `madd_aared_len` | مقدار مد العارض | `2`, `4`, `6` | `4` | مقدار مد العارض للسكون |
+| `madd_alleen_len` | مقدار مد اللين | `2`, `4`, `6` | `None` | مقدار مد اللين عند الوقف (يختصر إلى madd_aared_len) |
+| `ghonna_lam_and_raa` | غنة اللام و الراء | `ghonna` (غنة), `no_ghonna` (لا غنة) | `no_ghonna` | الغنة في إدغام النون مع اللام والراء لقراءة حفص |
+| `meem_aal_imran` | ميم آل عمران | `waqf` (وقف), `wasl_2` (فتح الميم ومدها حركتين), `wasl_6` (فتح الميم ومدها ستة حركات) | `waqf` | طريقة قراءة {الم الله} في حالة الوصل |
+| `madd_yaa_alayn_alharfy` | مقدار المد اللازم الحرفي للعين | `2`, `4`, `6` | `6` | مقدار المد الحرفي اللازم لحرف العين في سورة مريم والشورى |
+| `saken_before_hamz` | الساكن قبل الهمز | `tahqeek` (تحقيق), `general_sakt` (سكت عام), `local_sakt` (سكت خاص) | `tahqeek` | كيفية قراءة الساكن قبل الهمز لقراءة حفص |
+| `sakt_iwaja` | السكت عند عوجا في الكهف | `sakt` (سكت), `waqf` (وقف), `idraj` (إدراج) | `waqf` | كيفية قراءة عوجا (Iwaja) في سورة الكهف |
+| `sakt_marqdena` | السكت عند مرقدنا في يس | `sakt` (سكت), `waqf` (وقف), `idraj` (إدراج) | `waqf` | كيفية قراءة مرقدنا (Marqadena) في سورة يس |
+| `sakt_man_raq` | السكت عند من راق في القيامة | `sakt` (سكت), `waqf` (وقف), `idraj` (إدراج) | `sakt` | كيفية قراءة من راق (Man Raq) في سورة القيامة |
+| `sakt_bal_ran` | السكت عند بل ران في المطففين | `sakt` (سكت), `waqf` (وقف), `idraj` (إدراج) | `sakt` | كيفية قراءة بل ران (Bal Ran) في سورة المطففين |
+| `sakt_maleeyah` | وجه قوله {ماليه هلك} بالحاقة | `sakt` (سكت), `waqf` (وقف), `idgham` (إدغام) | `waqf` | كيفية قراءة ماليه هلك في سورة الحاقة |
+| `between_anfal_and_tawba` | وجه بين الأنفال والتوبة | `waqf` (وقف), `sakt` (سكت), `wasl` (وصل) | `waqf` | كيفية قراءة نهاية سورة الأنفال وبداية سورة التوبة |
+| `noon_and_yaseen` | الإظهار في النون | `izhar` (إظهار), `idgham` (إدغام) | `izhar` | إدغام النون في يس ون والقلم |
+| `yaa_athan` | إثبات الياء وحذفها وقفا | `wasl` (وصل), `hadhf` (حذف), `ithbat` (إثبات) | `wasl` | إثبات أو حذف الياء في {آتاني} في سورة النمل |
+| `start_with_ism` | وجه البدأ بكلمة {الاسم} | `wasl` (وصل), `lism` (لسم), `alism` (ألسم) | `wasl` | حكم البدأ بكلمة الاسم في سورة الحجرات |
+| `yabsut` | السين والصاد في {يقبض ويبسط} | `seen` (سين), `saad` (صاد) | `seen` | النطق في سورة البقرة |
+| `bastah` | السين والصاد في {بسطة} | `seen` (سين), `saad` (صاد) | `seen` | النطق في سورة الأعراف |
+| `almusaytirun` | السين والصاد في {المصيطرون} | `seen` (سين), `saad` (صاد) | `saad` | النطق في سورة الطور |
+| `bimusaytir` | السين والصاد في {بمصيطر} | `seen` (سين), `saad` (صاد) | `saad` | النطق في سورة الغاشية |
+| `tasheel_or_madd` | همزة الوصل | `tasheel` (تسهيل), `madd` (مد) | `madd` | تسهيل أو مد همزة الوصل في {آلذكرين} |
+| `yalhath_dhalik` | الإدغام في {يلهث ذلك} | `izhar` (إظهار), `idgham` (إدغام), `waqf` (وقف) | `idgham` | الإدغام في سورة الأعراف |
+| `irkab_maana` | الإدغام في {اركب معنا} | `izhar` (إظهار), `idgham` (إدغام), `waqf` (وقف) | `idgham` | الإدغام في سورة هود |
+| `noon_tamnna` | الإشمام والروم في {تأمنا} | `ishmam` (إشمام), `rawm` (روم) | `ishmam` | الإشمام والروم في سورة يوسف |
+| `harakat_daaf` | حركة الضاد في {ضعف} | `fath` (فتح), `dam` (ضم) | `fath` | حركة الضاد في سورة الروم |
+| `alif_salasila` | الألف في {سلاسلا} | `hadhf` (حذف), `ithbat` (إثبات), `wasl` (وصل) | `wasl` | إثبات أو حذف الألف في سورة الإنسان |
+| `idgham_nakhluqkum` | إدغام القاف في الكاف | `idgham_kamil` (إدغام كامل), `idgham_naqis` (إدغام ناقص) | `idgham_kamil` | إدغام القاف في الكاف في سورة المرسلات |
+| `raa_firq` | راء {فرق} في الشعراء | `waqf` (وقف), `tafkheem` (تفخيم), `tarqeeq` (ترقيق) | `tafkheem` | تفخيم وترقيق الراء في سورة الشعراء |
+| `raa_alqitr` | راء {القطر} في سبأ | `wasl` (وصل), `tafkheem` (تفخيم), `tarqeeq` (ترقيق) | `wasl` | تفخيم وترقيق الراء في سورة سبأ |
+| `raa_misr` | راء {مصر} في يونس | `wasl` (وصل), `tafkheem` (تفخيم), `tarqeeq` (ترقيق) | `wasl` | تفخيم وترقيق الراء في سورة يونس |
+| `raa_nudhur` | راء {نذر} في القمر | `wasl` (وصل), `tafkheem` (تفخيم), `tarqeeq` (ترقيق) | `tafkheem` | تفخيم وترقيق الراء في سورة القمر |
+| `raa_yasr` | راء {يسر} بالفجر | `wasl` (وصل), `tafkheem` (تفخيم), `tarqeeq` (ترقيق) | `tarqeeq` | تفخيم وترقيق الراء في سورة الفجر |
+| `meem_mokhfah` | هل الميم مخفاة أو مدغمة | `meem` (ميم), `ikhfaa` (إخفاء) | `ikhfaa` | إخفاء أو إدغام الميم في حالة الإخفاء |
 
 ---
 
-## Example: Quran Search
+## قواعد التجويد (Tajweed Rules)
 
-Search the Quran using audio or phonetic text.
+قواعد التجويد المستخدمة في تحليل الأخطاء. يتم استيرادها من `quran_transcript.phonetics.tajweed_rulses`:
 
-### Command (curl)
+| القاعدة | العربية | نوع الفحص | الطول المرجعي | الوصف |
+|---------|---------|-----------|---------------|-------|
+| `Qalqalah` | قلقة | `match` | 0 | قلقلة - حركة الحرف الساكن عند النطق به |
+| `NormalMaddRule` | المد الطبيعي | `count` | 2 | المد الطبيعي الذي يأتي بشكل عادي في الكلمة |
+| `MonfaselMaddRule` | المد المنفصل | `count` | 4 | المد المنفصل بين الكلمتين |
+| `MottaselMaddRule` | المد المتصل | `count` | 4 | المد المتصل بين حروف الكلمة |
+| `MottaselMaddPauseRule` | المد المتصل وقفا | `count` | 4 | المد المتصل عند الوقف |
+| `LazemMaddRule` | المد اللازم | `count` | 6 | المد اللازم في الحروف المعينة (مثل الميم في الميم) |
+| `AaredMaddRule` | المد العارض للسكون | `count` | 4 | المد الذي يظهر عند الوقف على كلمة معينة |
+| `LeenMaddRule` | مد اللين | `count` | 4 | مد اللين للواو الساكنة والياء الساكنة قبلها حرف مفتوح |
+
+### شرح أنواع قواعد التجويد
+
+1. **Qalqalah (قلقة)**: حركة الحرف الساكن عند النطق به، وتحدث في حروف القلقلة: ق، ط، ب، ج، د
+2. **NormalMaddRule (المد الطبيعي)**: المد العادي الذي يأتي في الكلمة بشكل طبيعي، طوله حركتان
+3. **MonfaselMaddRule (المد المنفصل)**: المد بين الكلمتين عندما ينتهي بكلمة وينتهي آخرها بحرف من حروف المد
+4. **MottaselMaddRule (المد المتصل)**: المد داخل الكلمة بين حروف المد
+5. **MottaselMaddPauseRule (المد المتصل وقفا)**: المد المتصل عند الوقف على كلمة معينة
+6. **LazemMaddRule (المد اللازم)**: المد اللازم في الحروف المعينة مثل الميم في {الم} والهمزة في {ءآل}
+7. **AaredMaddRule (المد العارض للسكون)**: المد الذي يظهر عند الوقف بسبب السكون
+8. **LeenMaddRule (مد اللين)**: مد اللين للواو الساكنة والياء الساكنة وقبلهما حرف مفتوح
+
+---
+
+## مثال: البحث في القرآن (Search Endpoint)
+
+البحث في القرآن باستخدام الصوت أو النص الصوتي.
+
+### الأمر (curl)
 
 ```bash
 curl -X 'POST' \
@@ -512,7 +511,7 @@ curl -X 'POST' \
   -F 'file=@WhatsApp Ptt 2026-02-20 at 1.56.35 PM.ogg;type=application/ogg'
 ```
 
-### Response (JSON)
+### الاستجابة (JSON)
 
 ```json
 {
@@ -659,18 +658,18 @@ curl -X 'POST' \
 }
 ```
 
-### Response Explanation
+### شرح الاستجابة
 
-- **phonemes**: Phonemes extracted from the input audio
-- **results**: List of matching results in the Holy Quran, each result contains:
-  - **start**: Start position of the match (surah number, verse number, word position, character position, phoneme position)
-  - **end**: End position of the match
-  - **uthmani_text**: Matching Uthmani script text
-- **message**: Optional message (e.g., if no results found)
+- **phonemes**: الفونيمات المستخرجة من الصوت المدخل
+- **results**: قائمة النتائج المطابقة في القرآن الكريم، كل نتيجة تحتوي على:
+  - **start**: موقع بداية المطابقة (رقم السورة، رقم الآية، موقع الكلمة، موقع الحرف، موقع الفونيم)
+  - **end**: موقع نهاية المطابقة
+  - **uthmani_text**: النص العثماني المطابق
+- **message**: رسالة اختيارية (مثلاً إذا لم توجد نتائج)
 
-### Searching with Phonetic Text Directly
+### البحث بالنص الصوتي مباشرة
 
-You can also search directly with phonetic text without an audio file:
+يمكنك أيضاً البحث مباشرة بالنص الصوتي بدون ملف صوتي:
 
 ```bash
 curl -X 'POST' \
@@ -679,9 +678,9 @@ curl -X 'POST' \
 
 ---
 
-## Complete Example: Recitation Correction
+## مثال كامل: تصحيح التلاوة
 
-### Command (curl)
+### الأمر (curl)
 
 ```bash
 curl -X 'POST' \
@@ -692,7 +691,7 @@ curl -X 'POST' \
   -F 'file=@WhatsApp Ptt 2026-02-20 at 1.56.35 PM.ogg;type=application/ogg'
 ```
 
-### Response (JSON)
+### الاستجابة (JSON)
 
 ```json
 {
@@ -781,31 +780,32 @@ curl -X 'POST' \
 }
 ```
 
-### Response Explanation
+### شرح الاستجابة
 
-- **start/end**: Position in the Quran (surah number, verse number, word position, character position, phoneme position)
-- **predicted_phonemes**: Phonemes predicted from the audio
-- **reference_phonemes**: Reference phonemes from the Quranic text using moshaf attributes
-- **uthmani_text**: Matching Uthmani script text
-- **errors**: List of detected errors, each error contains:
-  - **error_type**: Type of error (`tajweed` = tajweed error, `normal` = normal error, `tashkeel` = diacritics error)
-  - **speech_error_type**: Type of speech error (`insert` = insertion, `delete` = deletion, `replace` = replacement)
-  - **expected_ph/predicted_ph**: Expected and predicted phonemes
-  - **expected_len/predicted_len**: Expected and predicted length (for madd rules like madd lazem)
-  - **ref_tajweed_rules**: Reference tajweed rules that should be applied
+- **start/end**: موقع النتيجة في القرآن (رقم السورة، رقم الآية، موقع الكلمة، موقع الحرف، موقع الفونيم)
+- **predicted_phonemes**: الفونيمات المتوقعة من الصوت
+- **reference_phonemes**: الفونيمات المرجعية من النص القرآني باستخدام خصائص المصحف
+- **uthmani_text**: النص العثماني المطابق
+- **errors**: قائمة الأخطاء المكتشفة، كل خطأ يحتوي على:
+  - **error_type**: نوع الخطأ (`tajweed` = تجودي، `normal` = عادي، `tashkeel` = تشكيل)
+  - **speech_error_type**: نوع خطأ الكلام (`insert` = إدخال، `delete` = حذف، `replace` = استبدال)
+  - **expected_ph/predicted_ph**: الفونيم المتوقع والمتنبأ به
+  - **expected_len/predicted_len**: الطول المتوقع والمتنبأ به (لمدود مثل المد اللازم)
+  - **ref_tajweed_rules**: قواعد التجويد المرجعية التي يجب تطبيقها
 
 ---
 
-## Interactive OpenAPI Documentation
+## وثائق OpenAPI التفاعلية
 
-For complete interactive documentation with examples and detailed descriptions for every parameter, please visit:
+للحصول على وثائق تفاعلية كاملة مع أمثلة وأوصاف مفصلة لكل المعلمة، الرجاء زيارة:
 
-- **App**: http://localhost:8001/docs
-- **Engine**: http://localhost:8000/docs
+- **التطبيق (App)**: http://localhost:8001/docs
+- **المحرك (Engine)**: http://localhost:8000/docs
 
-This documentation includes:
-- All endpoints with complete descriptions
-- All parameters with their default values and data types
-- Interactive examples for each endpoint
-- Complete response schemas
-- Direct execution capability from the browser
+تحتوي هذه الوثائق على:
+- جميع نقاط النهاية مع أوصافها الكاملة
+- جميع المعاملات مع قيمها الافتراضية ونوع البيانات
+- أمثلة تفاعلية لكل نقطة نهاية
+- مخططات الاستجابة الكاملة
+- إمكانية التنفيذ المباشر من المتصفح
+```
