@@ -560,3 +560,16 @@ async def transcript(
     """Transcribe audio to phonetic script (proxy to engine)."""
     phonemes = await call_engine_predict(file)
     return TranscriptResponse(phonemes=phonemes, sifat=None)
+
+
+# Serve the playground UI if the directory exists in the current working directory.
+# This allows users to open http://localhost:8001 and get the interactive Mushaf.
+from pathlib import Path
+
+_playground_dir = Path("playground")
+if _playground_dir.is_dir():
+    from fastapi.staticfiles import StaticFiles
+
+    app.mount(
+        "/", StaticFiles(directory=str(_playground_dir), html=True), name="playground"
+    )
